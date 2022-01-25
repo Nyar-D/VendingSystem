@@ -2,6 +2,7 @@
 #define ADVERTISE_H
 
 #include <QWidget>
+#include "shop.h"
 
 namespace Ui {
 class advertise;
@@ -20,6 +21,7 @@ private slots:
 
 private:
     Ui::advertise *ui;
+    Shop *shop;
 };
 
 #endif // ADVERTISE_H
