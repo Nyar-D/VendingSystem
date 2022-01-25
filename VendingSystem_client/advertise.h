@@ -15,6 +15,9 @@ public:
     explicit advertise(QWidget *parent = 0);
     ~advertise();
 
+private slots:
+    void on_enter_btn_clicked();
+
 private:
     Ui::advertise *ui;
 };

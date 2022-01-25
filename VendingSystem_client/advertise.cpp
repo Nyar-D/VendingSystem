@@ -12,3 +12,8 @@ advertise::~advertise()
 {
     delete ui;
 }
+
+void advertise::on_enter_btn_clicked()
+{
+
+}
