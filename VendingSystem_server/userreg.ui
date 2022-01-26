@@ -13,13 +13,13 @@
   <property name="windowTitle">
    <string>Add</string>
   </property>
-  <widget class="QWidget" name="">
+  <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
-     <x>380</x>
-     <y>120</y>
+     <x>360</x>
+     <y>80</y>
      <width>244</width>
-     <height>389</height>
+     <height>434</height>
     </rect>
    </property>
    <layout class="QVBoxLayout" name="verticalLayout">
@@ -35,6 +35,20 @@
       </property>
       <property name="alignment">
        <set>Qt::AlignCenter</set>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QLabel" name="name_lb">
+      <property name="text">
+       <string>姓名：</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QLineEdit" name="name_le">
+      <property name="placeholderText">
+       <string>请输入姓名</string>
       </property>
      </widget>
     </item>
@@ -93,7 +107,7 @@
     <item>
      <layout class="QHBoxLayout" name="horizontalLayout_2">
       <item>
-       <widget class="QRadioButton" name="woman">
+       <widget class="QRadioButton" name="man">
         <property name="focusPolicy">
          <enum>Qt::NoFocus</enum>
         </property>
@@ -106,7 +120,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QRadioButton" name="man">
+       <widget class="QRadioButton" name="woman">
         <property name="focusPolicy">
          <enum>Qt::NoFocus</enum>
         </property>
@@ -147,19 +161,6 @@
     </item>
    </layout>
   </widget>
-  <zorder>username_le</zorder>
-  <zorder>password_le</zorder>
-  <zorder>toolButton</zorder>
-  <zorder>username_lb</zorder>
-  <zorder>password_lb</zorder>
-  <zorder>contact_lb</zorder>
-  <zorder>contact_le</zorder>
-  <zorder>back_btn</zorder>
-  <zorder>add_btn</zorder>
-  <zorder>tips_lb</zorder>
-  <zorder>man</zorder>
-  <zorder>woman</zorder>
-  <zorder>horizontalLayoutWidget</zorder>
  </widget>
  <resources/>
  <connections/>

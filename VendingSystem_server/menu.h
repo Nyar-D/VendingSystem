@@ -2,6 +2,7 @@
 #define MENU_H
 
 #include <QWidget>
+#include <QtSql>
 
 namespace Ui {
 class Menu;
@@ -22,11 +23,15 @@ private slots:
     void back_btn_clicked();
 
     void add_btn_clicked();
+    void prepareTheTable(void);
 
 private:
     Ui::Menu *ui;
     Ui::UserReg *ui_reg;
     QWidget *w;
+    QSqlDatabase db;
+
 };
+
 
 #endif // MENU_H
