@@ -1,22 +1,29 @@
 #ifndef LOGIN_H
 #define LOGIN_H
 
-#include <QMainWindow>
+#include <QWidget>
+#include "menu.h"
 
 namespace Ui {
-class login;
+class Login;
 }
 
-class login : public QMainWindow
+class Login : public QWidget
 {
     Q_OBJECT
 
 public:
-    explicit login(QWidget *parent = 0);
-    ~login();
+    explicit Login(QWidget *parent = 0);
+    ~Login();
+
+private slots:
+    void on_reset_btn_clicked();
+
+    void on_login_btn_clicked();
 
 private:
-    Ui::login *ui;
+    Ui::Login *ui;
+    Menu *menu;
 };
 
 #endif // LOGIN_H

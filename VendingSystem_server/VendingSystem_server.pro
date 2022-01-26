@@ -1,6 +1,6 @@
 #-------------------------------------------------
 #
-# Project created by QtCreator 2022-01-25T05:17:44
+# Project created by QtCreator 2022-01-25T20:35:03
 #
 #-------------------------------------------------
 
@@ -13,8 +13,11 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        login.cpp
+        login.cpp \
+    menu.cpp
 
-HEADERS  += login.h
+HEADERS  += login.h \
+    menu.h
 
-FORMS    += login.ui
+FORMS    += login.ui \
+    menu.ui

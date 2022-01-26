@@ -1,24 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>Advertisement</class>
- <widget class="QMainWindow" name="Advertisement" >
-  <property name="geometry" >
+ <widget class="QMainWindow" name="Advertisement">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>300</height>
+    <width>1024</width>
+    <height>600</height>
    </rect>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>Advertisement</string>
   </property>
-  <widget class="QMenuBar" name="menuBar" />
-  <widget class="QToolBar" name="mainToolBar" />
-  <widget class="QWidget" name="centralWidget" />
-  <widget class="QStatusBar" name="statusBar" />
+  <widget class="QWidget" name="centralWidget">
+   <widget class="QLabel" name="advertisement_lb">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>0</y>
+      <width>1024</width>
+      <height>568</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>暂无广告</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton">
+    <property name="geometry">
+     <rect>
+      <x>412</x>
+      <y>490</y>
+      <width>200</width>
+      <height>48</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>点击购买</string>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QStatusBar" name="statusBar"/>
  </widget>
- <layoutDefault spacing="6" margin="11" />
- <pixmapfunction></pixmapfunction>
+ <layoutdefault spacing="6" margin="11"/>
  <resources/>
  <connections/>
 </ui>

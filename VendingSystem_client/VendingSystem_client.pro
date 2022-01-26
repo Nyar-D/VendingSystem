@@ -13,8 +13,14 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        advertisement.cpp
+        advertisement.cpp \
+    shop.cpp
 
-HEADERS  += advertisement.h
+HEADERS  += advertisement.h \
+    shop.h
 
-FORMS    += advertisement.ui
+FORMS    += advertisement.ui \
+    shop.ui
+
+RESOURCES += \
+    media.qrc

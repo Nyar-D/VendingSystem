@@ -12,3 +12,10 @@ Advertisement::~Advertisement()
 {
     delete ui;
 }
+
+void Advertisement::on_pushButton_clicked()
+{
+    shop = new Shop();
+    this->hide();
+    shop->show();
+}
