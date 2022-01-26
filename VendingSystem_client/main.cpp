@@ -1,10 +1,10 @@
-#include "advertise.h"
+#include "advertisement.h"
 #include <QApplication>
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-    advertise w;
+    Advertisement w;
     w.show();
 
     return a.exec();

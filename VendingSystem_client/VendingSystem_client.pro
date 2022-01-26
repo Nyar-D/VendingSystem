@@ -1,6 +1,6 @@
 #-------------------------------------------------
 #
-# Project created by QtCreator 2022-01-25T05:19:29
+# Project created by QtCreator 2022-01-25T20:09:16
 #
 #-------------------------------------------------
 
@@ -13,14 +13,8 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        advertise.cpp \
-    shop.cpp
+        advertisement.cpp
 
-HEADERS  += advertise.h \
-    shop.h
+HEADERS  += advertisement.h
 
-FORMS    += advertise.ui \
-    shop.ui
-
-RESOURCES += \
-    advertisement.qrc
+FORMS    += advertisement.ui
