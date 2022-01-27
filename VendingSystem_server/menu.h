@@ -4,6 +4,10 @@
 #include <QWidget>
 #include <QtSql>
 
+#define USERDBFILE "./UserDatabase.db"
+#define USERDBNAME "UserDatabase.db"
+#define USERDBCONNECTION "dbUser"
+
 namespace Ui {
 class Menu;
 class UserReg;
@@ -25,12 +29,14 @@ private slots:
     void add_btn_clicked();
     void prepareTheTable(void);
 
+    void on_refresh_btn_clicked();
+
 private:
     Ui::Menu *ui;
     Ui::UserReg *ui_reg;
-    QWidget *w;
+    QWidget *userRegWidget;
     QSqlDatabase db;
-
+    QSqlQueryModel* model;
 };
 
 
