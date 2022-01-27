@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include "menu.h"
+#include "ui_login.h"
 
 namespace Ui {
 class Login;

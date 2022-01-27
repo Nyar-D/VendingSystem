@@ -1,5 +1,5 @@
 #include "login.h"
-#include "ui_login.h"
+
 
 Login::Login(QWidget *parent) :
     QWidget(parent),
@@ -31,7 +31,7 @@ void Login::on_login_btn_clicked()
         return;
     }
 
-    if(usernameInput == "admin" && passwordInput == "123")
+    if(usernameInput == "admin" && passwordInput == "123456")
     {
         menu = new Menu();
         this->hide();

@@ -3,6 +3,11 @@
 
 #include <QWidget>
 #include <QtSql>
+#include "ui_menu.h"
+#include "ui_userreg.h"
+#include <QDebug>
+#include <QMessageBox>
+#include <QFileInfo>
 
 #define USERDBFILE "./UserDatabase.db"
 #define USERDBNAME "UserDatabase.db"
@@ -37,6 +42,7 @@ private:
     QWidget *userRegWidget;
     QSqlDatabase db;
     QSqlQueryModel* model;
+    QSortFilterProxyModel *sqlproxy;
 };
 
 

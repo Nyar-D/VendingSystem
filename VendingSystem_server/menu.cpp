@@ -1,10 +1,4 @@
 #include "menu.h"
-#include "ui_menu.h"
-#include "ui_userreg.h"
-#include <QDebug>
-#include <QMessageBox>
-#include <QFileInfo>
-
 
 Menu::Menu(QWidget *parent) :
     QWidget(parent),
@@ -49,6 +43,10 @@ void Menu::add_btn_clicked()
     sexSelect.addButton(ui_reg->man);
     sexSelect.addButton(ui_reg->woman);
     QString sex = sexSelect.checkedButton()->objectName();
+    if(!QString::compare(sex, "man"))
+        sex = "男";
+    else
+        sex = "女";
 
     if(name.isEmpty() || username.isEmpty() || password.isEmpty() || contact.isEmpty() || contact.size() != 11)
     {
@@ -165,6 +163,8 @@ void Menu::on_refresh_btn_clicked()
         model->setHeaderData(4,Qt::Horizontal,QObject::tr("性别"));
         model->setHeaderData(5,Qt::Horizontal,QObject::tr("联系方式"));
         model->setHeaderData(6,Qt::Horizontal,QObject::tr("注册日期"));
-        ui->user_table->setModel(model);
+        sqlproxy = new QSortFilterProxyModel(this);
+        sqlproxy->setSourceModel(model);
+        ui->user_table->setModel(sqlproxy);
     }
 }
