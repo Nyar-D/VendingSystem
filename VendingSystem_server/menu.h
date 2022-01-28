@@ -1,4 +1,4 @@
-#ifndef MENU_H
+﻿#ifndef MENU_H
 #define MENU_H
 
 #include <QWidget>
@@ -8,6 +8,7 @@
 #include <QDebug>
 #include <QMessageBox>
 #include <QFileInfo>
+#include "tablemodel.h"
 
 #define USERDBFILE "./UserDatabase.db"
 #define USERDBNAME "UserDatabase.db"
@@ -28,22 +29,24 @@ public:
 
 private slots:
     void on_newUser_btn_clicked();
-
     void back_btn_clicked();
-
     void add_btn_clicked();
     void prepareTheTable(void);
-
     void on_refresh_btn_clicked();
+
+    void on_batchDelete_btn_clicked();
 
 private:
     Ui::Menu *ui;
     Ui::UserReg *ui_reg;
     QWidget *userRegWidget;
     QSqlDatabase db;
-    QSqlQueryModel* model;
+    TableModel* model;
     QSortFilterProxyModel *sqlproxy;
 };
+
+
+
 
 
 #endif // MENU_H

@@ -14,10 +14,12 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         login.cpp \
-    menu.cpp
+    menu.cpp \
+    tablemodel.cpp
 
 HEADERS  += login.h \
-    menu.h
+    menu.h \
+    tablemodel.h
 
 FORMS    += login.ui \
     menu.ui \

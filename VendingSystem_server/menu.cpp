@@ -154,7 +154,7 @@ void Menu::on_refresh_btn_clicked()
     }
     else
     {
-        model = new QSqlQueryModel(ui->user_table);
+        model = new TableModel();
         model->setQuery("select * from user", db);
         model->setHeaderData(0,Qt::Horizontal,QObject::tr("ID"));
         model->setHeaderData(1,Qt::Horizontal,QObject::tr("姓名"));
@@ -168,3 +168,66 @@ void Menu::on_refresh_btn_clicked()
         ui->user_table->setModel(sqlproxy);
     }
 }
+
+
+
+
+
+void Menu::on_batchDelete_btn_clicked()
+{
+    QMessageBox msg;
+    msg.setText("确定要删除所选择的用户吗？");
+    msg.setWindowTitle("Warning");
+    QPushButton *yes_btn = msg.addButton("确认", QMessageBox::AcceptRole);
+    QPushButton *no_btn = msg.addButton("取消", QMessageBox::RejectRole);
+    msg.exec();
+    if(msg.clickedButton() == yes_btn)
+    {
+        qDebug() << "yes";
+        if(!db.open())
+        {
+            qDebug()<<"no open";
+            QMessageBox::critical(this, "Error", "无法打开数据库！");
+            return;
+        }
+        else
+        {
+            qDebug()<<"open";
+            QString delete_sql_user = "delete from user where ID in (:ID)";
+            QSqlQuery sql_query = QSqlQuery(db);
+            sql_query.prepare(delete_sql_user);
+
+            QMap<int, Qt::CheckState> checkedMap = model->check_state_map;
+            QList<int> keysList = checkedMap.keys();
+            QStringList idStringList;
+            for(int i = 0; i< keysList.size(); i++)
+                idStringList.append(QString::number(keysList.at(i) + 1));
+
+            QString idString = idStringList.join(",");
+
+            sql_query.bindValue(":ID",idString);
+
+            if(!sql_query.exec())
+            {
+                qDebug() << QObject::tr("User table failed to delete!");
+                qDebug() << sql_query.lastError();
+                QMessageBox::critical(this, "Error", "删除失败！");
+
+            }
+            else
+            {
+                qDebug() << "User delete!";
+                Menu::on_refresh_btn_clicked();
+                QMessageBox::information(this, "Tip", "删除成功！");
+            }
+            db.close();
+        }
+    }
+    else if(msg.clickedButton() == no_btn)
+    {
+        qDebug() << "no";
+        return;
+    }
+    return;
+}
+
