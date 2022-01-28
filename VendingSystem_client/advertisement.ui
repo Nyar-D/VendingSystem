@@ -24,13 +24,13 @@
      </rect>
     </property>
     <property name="text">
-     <string>暂无广告</string>
+     <string>广告位招租，联系电话xxx-xxxxxxxx</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignCenter</set>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton">
+   <widget class="QPushButton" name="adv_enterShop_bt">
     <property name="geometry">
      <rect>
       <x>412</x>
