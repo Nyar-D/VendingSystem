@@ -175,6 +175,28 @@ void Menu::on_refresh_btn_clicked()
 
 void Menu::on_batchDelete_btn_clicked()
 {
+    QMap<int,QPair<QVariant, Qt::CheckState> > checkedMap = model->check_state_map;
+    QList<QPair<QVariant, Qt::CheckState> > valuesList = checkedMap.values();
+
+    if(!checkedMap.size())
+    {
+        QMessageBox::information(this, "Tip", "请选择要删除的用户！");
+        return;
+    }
+    else
+    {
+        for(int i = 0; i < checkedMap.size(); i++)
+        {
+            if(valuesList.at(i).second == Qt::Checked)
+                break;
+            else
+            {
+                QMessageBox::information(this, "Tip", "请选择要删除的用户！");
+                return;
+            }
+        }
+    }
+
     QMessageBox msg;
     msg.setText("确定要删除所选择的用户吗？");
     msg.setWindowTitle("Warning");
@@ -193,21 +215,24 @@ void Menu::on_batchDelete_btn_clicked()
         else
         {
             qDebug()<<"open";
-            QString delete_sql_user = "delete from user where ID in (:ID)";
+            QVariantList GroupIDs;
+            QString delete_sql_user = "delete from user where ID=?";
             QSqlQuery sql_query = QSqlQuery(db);
             sql_query.prepare(delete_sql_user);
 
-            QMap<int, Qt::CheckState> checkedMap = model->check_state_map;
-            QList<int> keysList = checkedMap.keys();
-            QStringList idStringList;
-            for(int i = 0; i< keysList.size(); i++)
-                idStringList.append(QString::number(keysList.at(i) + 1));
+            //QStringList idStringList;
+            for(int i = 0; i< valuesList.size(); i++)
+            {
+                if(valuesList.at(i).second == Qt::Checked)
+                    GroupIDs.append(valuesList.at(i).first.toInt());
+            }
+                //idStringList.append(valuesList.at(i).first.toString());
 
-            QString idString = idStringList.join(",");
-
-            sql_query.bindValue(":ID",idString);
-
-            if(!sql_query.exec())
+            //QString idString = idStringList.join(",");
+            qDebug() << "sql:" << GroupIDs;
+            //sql_query.bindValue(":ID",idString);
+            sql_query.addBindValue(GroupIDs);
+            if(!sql_query.execBatch())
             {
                 qDebug() << QObject::tr("User table failed to delete!");
                 qDebug() << sql_query.lastError();
@@ -222,10 +247,14 @@ void Menu::on_batchDelete_btn_clicked()
             }
             db.close();
         }
+
+
+
     }
     else if(msg.clickedButton() == no_btn)
     {
         qDebug() << "no";
+        model->check_state_map.clear();
         return;
     }
     return;

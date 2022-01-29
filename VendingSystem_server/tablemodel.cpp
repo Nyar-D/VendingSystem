@@ -6,7 +6,8 @@ bool TableModel::setData(const QModelIndex &index, const QVariant &value, int ro
         return false;
     if(role == Qt::CheckStateRole && index.column() == 0)
     {
-        check_state_map[index.row()] = (value == Qt::Checked ? Qt::Checked : Qt::Unchecked);
+        check_state_map[index.row()].second = (value == Qt::Checked ? Qt::Checked : Qt::Unchecked);
+        check_state_map[index.row()].first = index.data(Qt::DisplayRole);
     }
     return true;
 }
@@ -21,8 +22,7 @@ QVariant TableModel::data(const QModelIndex &index, int role) const
         if(index.column() == 0)
         {
             if(check_state_map.contains(index.row()))
-
-                return check_state_map[index.row()] == Qt::Checked ? Qt::Checked : Qt::Unchecked;
+                return check_state_map[index.row()].second == Qt::Checked ? Qt::Checked : Qt::Unchecked;
             return Qt::Unchecked;
         }
     }
