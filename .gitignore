@@ -50,3 +50,5 @@ compile_commands.json
 
 # QtCreator local machine specific files for imported projects
 *creator.user*
+VendingSystem_client/VendingSystem_client.pro.user
+VendingSystem_server/VendingSystem_server.pro.user
