@@ -15,6 +15,8 @@ Menu::~Menu()
     delete ui_reg;
     delete userRegWidget;
     delete model;
+    delete m_buttonDelegate;
+    delete sqlproxy;
 }
 
 void Menu::on_newUser_btn_clicked()
@@ -155,6 +157,7 @@ void Menu::on_refresh_btn_clicked()
     else
     {
         model = new TableModel();
+        m_buttonDelegate = new ButtonDelegate(ui->user_table);
         model->setQuery("select * from user", db);
         model->setHeaderData(0,Qt::Horizontal,QObject::tr("ID"));
         model->setHeaderData(1,Qt::Horizontal,QObject::tr("姓名"));
@@ -163,9 +166,13 @@ void Menu::on_refresh_btn_clicked()
         model->setHeaderData(4,Qt::Horizontal,QObject::tr("性别"));
         model->setHeaderData(5,Qt::Horizontal,QObject::tr("联系方式"));
         model->setHeaderData(6,Qt::Horizontal,QObject::tr("注册日期"));
-        sqlproxy = new QSortFilterProxyModel(this);
+        model->insertColumn(7);
+        model->setHeaderData(7,Qt::Horizontal,QObject::tr("操作"));
+        ui->user_table->setItemDelegateForColumn(7, m_buttonDelegate);
+        sqlproxy = new QSortFilterProxyModel();
         sqlproxy->setSourceModel(model);
         ui->user_table->setModel(sqlproxy);
+        ui->user_table->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
     }
 }
 

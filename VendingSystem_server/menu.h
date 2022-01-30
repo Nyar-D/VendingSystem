@@ -8,7 +8,7 @@
 #include <QDebug>
 #include <QMessageBox>
 #include <QFileInfo>
-#include "tablemodel.h"
+#include "usertable.h"
 
 #define USERDBFILE "./UserDatabase.db"
 #define USERDBNAME "UserDatabase.db"
@@ -29,12 +29,15 @@ public:
 
 private slots:
     void on_newUser_btn_clicked();
-    void back_btn_clicked();
-    void add_btn_clicked();
-    void prepareTheTable(void);
+
     void on_refresh_btn_clicked();
 
     void on_batchDelete_btn_clicked();
+
+private:
+    void back_btn_clicked();
+    void add_btn_clicked();
+    void prepareTheTable(void);
 
 private:
     Ui::Menu *ui;
@@ -43,6 +46,7 @@ private:
     QSqlDatabase db;
     TableModel* model;
     QSortFilterProxyModel *sqlproxy;
+    ButtonDelegate *m_buttonDelegate;
 };
 
 

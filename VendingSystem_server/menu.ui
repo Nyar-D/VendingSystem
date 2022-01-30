@@ -60,7 +60,7 @@
        <enum>QTabWidget::Rounded</enum>
       </property>
       <property name="currentIndex">
-       <number>2</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="frontPage_tab">
        <attribute name="title">
@@ -121,7 +121,7 @@
           <x>10</x>
           <y>40</y>
           <width>971</width>
-          <height>521</height>
+          <height>481</height>
          </rect>
         </property>
         <property name="sortingEnabled">
