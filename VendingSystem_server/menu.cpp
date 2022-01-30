@@ -7,6 +7,16 @@ Menu::Menu(QWidget *parent) :
     prepareTheTable();
     ui->setupUi(this);
     Menu::on_refresh_btn_clicked();
+
+    QThread *thDBHandler = new QThread;    //创建处理数据库的线程
+    DBHandler *iDBHandler = new  DBHandler;
+    iDBHandler->moveToThread(thDBHandler);
+    connect(this, SIGNAL(GetAdvTable()), iDBHandler, SLOT(handle_getAdvTable()));
+    connect(iDBHandler, SIGNAL(ShowAdvTable(QSortFilterProxyModel*)), this, SLOT(show_adv_table(QSortFilterProxyModel*)));
+    thDBHandler->start();
+
+    emit GetAdvTable();
+//    thDBHandler->stop();
 }
 
 Menu::~Menu()
@@ -267,3 +277,8 @@ void Menu::on_batchDelete_btn_clicked()
     return;
 }
 
+void Menu::show_adv_table(QSortFilterProxyModel *sqlproxy)
+{
+    qDebug()<<"Menu: show_adv_table";
+    ui->adv_table->setModel(sqlproxy);
+}
