@@ -11,9 +11,9 @@
 #include "dbhandler.h"
 #include "usertable.h"
 
-#define USERDBFILE "./UserDatabase.db"
-#define USERDBNAME "UserDatabase.db"
-#define USERDBCONNECTION "dbUser"
+#define DBFILE "./UserDatabase.db"
+#define DBNAME "UserDatabase.db"
+#define DBCONNECTION "dbUser"
 
 namespace Ui {
 class Menu;
@@ -41,10 +41,16 @@ private slots:
 
     void show_adv_table(QSortFilterProxyModel *);
 //    void show_QMessageBox(int, )
+    void back_btn_clicked();
+
+    void add_btn_clicked();
+
+    void editUser_btn_clicked(const QModelIndex &);
+
+    void deleteUser_btn_clicked(const QModelIndex &);
 
 private:
-    void back_btn_clicked();
-    void add_btn_clicked();
+
     void prepareTheTable(void);
 
 private:

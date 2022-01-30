@@ -8,9 +8,9 @@
 #include <QMessageBox>
 #include "usertable.h"
 
-#define USERDBFILE "./UserDatabase.db"
-#define USERDBNAME "UserDatabase.db"
-#define USERDBCONNECTION "dbUser"
+#define DBFILE "./UserDatabase.db"
+#define DBNAME "UserDatabase.db"
+#define DBCONNECTION "dbUser"
 
 class DBHandler : public QObject
 {

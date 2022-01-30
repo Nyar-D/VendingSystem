@@ -27,4 +27,5 @@ HEADERS  += login.h \
 
 FORMS    += login.ui \
     menu.ui \
-    userreg.ui
+    user_edit.ui \
+    user_reg.ui

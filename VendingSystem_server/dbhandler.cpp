@@ -19,12 +19,12 @@ void DBHandler::handle_getAdvTable()
 
 void DBHandler::PrepareAdvTable()
 {
-    QString dbFilePath(USERDBFILE);
+    QString dbFilePath(DBFILE);
     QFileInfo fileinfo(dbFilePath);
-    if(QSqlDatabase::contains(USERDBCONNECTION))
+    if(QSqlDatabase::contains(DBCONNECTION))
     {
         qDebug() << "Connection: dbUser existed.";
-        db = QSqlDatabase::database(USERDBCONNECTION);
+        db = QSqlDatabase::database(DBCONNECTION);
 
         QSqlQuery query(db);
 
@@ -40,7 +40,7 @@ void DBHandler::PrepareAdvTable()
                 {
                     qDebug() << QObject::tr("Adv table failed to create!");
                     qDebug() << sql_query.lastError();
-                    QFile::remove(USERDBFILE);
+                    QFile::remove(DBFILE);
                 }
                 else
                     qDebug() << "DBHandleThread: Adv table created!";
@@ -53,8 +53,8 @@ void DBHandler::PrepareAdvTable()
     }
     else
     {
-        db = QSqlDatabase::addDatabase("QSQLITE", USERDBCONNECTION);
-        db.setDatabaseName(USERDBNAME);
+        db = QSqlDatabase::addDatabase("QSQLITE", DBCONNECTION);
+        db.setDatabaseName(DBNAME);
         qDebug() << "Connection: dbUser created success.";
         if(!fileinfo.isFile())
         {
@@ -67,7 +67,7 @@ void DBHandler::PrepareAdvTable()
                 {
                     qDebug() << QObject::tr("Advertisement table failed to create!");
                     qDebug() << sql_query.lastError();
-                    QFile::remove(USERDBFILE);
+                    QFile::remove(DBFILE);
                 }
                 else
                 {

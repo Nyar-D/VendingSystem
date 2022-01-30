@@ -115,18 +115,18 @@ void Menu::add_btn_clicked()
 
 void Menu::prepareTheTable(void)
 {
-    QString dbFilePath(USERDBFILE);
+    QString dbFilePath(DBFILE);
     QFileInfo fileinfo(dbFilePath);
-    if(QSqlDatabase::contains(USERDBCONNECTION))
+    if(QSqlDatabase::contains(DBCONNECTION))
     {
         qDebug() << "Connection:dbUser existed.";
-        db = QSqlDatabase::database(USERDBCONNECTION);
+        db = QSqlDatabase::database(DBCONNECTION);
     }
     else
     {
         qDebug() << "Connection:dbUser not existed.";
-        db = QSqlDatabase::addDatabase("QSQLITE", USERDBCONNECTION);
-        db.setDatabaseName(USERDBNAME);
+        db = QSqlDatabase::addDatabase("QSQLITE", DBCONNECTION);
+        db.setDatabaseName(DBNAME);
         if(!fileinfo.isFile())
         {
             if(db.open())
@@ -138,7 +138,7 @@ void Menu::prepareTheTable(void)
                 {
                     qDebug() << QObject::tr("User table failed to create!");
                     qDebug() << sql_query.lastError();
-                    QFile::remove(USERDBFILE);
+                    QFile::remove(DBFILE);
                 }
                 else
                 {
@@ -168,6 +168,8 @@ void Menu::on_refresh_btn_clicked()
     {
         model = new TableModel();
         m_buttonDelegate = new ButtonDelegate(ui->user_table);
+        connect(m_buttonDelegate, SIGNAL(sig_editUser(QModelIndex)), this, SLOT(editUser_btn_clicked(QModelIndex)));
+        connect(m_buttonDelegate, SIGNAL(sig_deleteUser(QModelIndex)), this, SLOT(deleteUser_btn_clicked(QModelIndex)));
         model->setQuery("select * from user", db);
         model->setHeaderData(0,Qt::Horizontal,QObject::tr("ID"));
         model->setHeaderData(1,Qt::Horizontal,QObject::tr("姓名"));
@@ -281,4 +283,14 @@ void Menu::show_adv_table(QSortFilterProxyModel *sqlproxy)
 {
     qDebug()<<"Menu: show_adv_table";
     ui->adv_table->setModel(sqlproxy);
+}
+
+void Menu::editUser_btn_clicked(const QModelIndex &index)
+{
+    qDebug() << "edit-index:" << index;
+}
+
+void Menu::deleteUser_btn_clicked(const QModelIndex &index)
+{
+    qDebug() << "delete-index:" << index;
 }

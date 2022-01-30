@@ -11,7 +11,6 @@
 #include <QMessageBox>
 #include <QDebug>
 
-
 class TableModel : public QSqlQueryModel
 {
 public:
@@ -30,9 +29,12 @@ public:
     void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const;
     bool editorEvent(QEvent *event, QAbstractItemModel *model, const QStyleOptionViewItem &option, const QModelIndex &index);
 
-private:
-    void editUser(const QModelIndex &);
-    void deleteUser(const QModelIndex &);
+
+signals:
+    void sig_editUser(const QModelIndex &);
+    void sig_deleteUser(const QModelIndex &);
+
+
 
 private:
     typedef QMap<QModelIndex, QPair<QStyleOptionButton*,QStyleOptionButton*>* > collButtons;

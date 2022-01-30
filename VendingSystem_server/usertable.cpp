@@ -105,26 +105,18 @@ bool ButtonDelegate::editorEvent(QEvent *event, QAbstractItemModel *model, const
             if(btns->first->rect.contains(e->x(), e->y()))
             {
                 btns->first->state &= (~QStyle::State_Sunken);
-                editUser(index);
+                emit sig_editUser(index);
             }
             else if(btns->second->rect.contains(e->x(), e->y()))
             {
                 btns->second->state &= (~QStyle::State_Sunken);
-                deleteUser(index);
+                emit sig_deleteUser(index);
             }
         }
     }
 }
 
-void ButtonDelegate::editUser(const QModelIndex &index)
-{
-    qDebug() << "edit-index:" << index;
-}
 
-void ButtonDelegate::deleteUser(const QModelIndex &index)
-{
-    qDebug() << "delete-index:" << index << "ID:";
-}
 
 
 
