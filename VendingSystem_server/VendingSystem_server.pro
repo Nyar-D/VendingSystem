@@ -15,13 +15,11 @@ TEMPLATE = app
 SOURCES += main.cpp\
         login.cpp \
     menu.cpp \
-    tablemodel.cpp \
-    dbhandler.cpp
+    tablemodel.cpp
 
 HEADERS  += login.h \
     menu.h \
-    tablemodel.h \
-    dbhandler.h
+    tablemodel.h
 
 FORMS    += login.ui \
     menu.ui \

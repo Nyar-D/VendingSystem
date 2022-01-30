@@ -12,8 +12,6 @@
 #include <QThread>
 #include "shop.h"
 
-#define ADVFOLDPATH "../vendingSys_adv"
-
 namespace Ui {
 class Advertisement;
 }
@@ -23,12 +21,11 @@ class Advertisement : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit Advertisement(QString advFoldPath = ADVFOLDPATH, QWidget *parent = 0);
+    explicit Advertisement(QString, QWidget *parent = 0);
     ~Advertisement();
 
     QFileInfoList GetFileList(QString);    //遍历文件夹获取文件列表
     void PlayAdv(QString);                 //加载广告文件
-    void SetAdvFoldPath(QString);
 
 private slots:
     void on_adv_enterShop_bt_clicked();
