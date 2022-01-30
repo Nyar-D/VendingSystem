@@ -9,6 +9,7 @@
 #include <QMessageBox>
 #include <QFileInfo>
 #include "tablemodel.h"
+#include "dbhandler.h"
 
 #define USERDBFILE "./UserDatabase.db"
 #define USERDBNAME "UserDatabase.db"
@@ -27,6 +28,10 @@ public:
     explicit Menu(QWidget *parent = 0);
     ~Menu();
 
+signals:
+    void GetAdvTable();
+    void threadExit();
+
 private slots:
     void on_newUser_btn_clicked();
     void back_btn_clicked();
@@ -36,6 +41,9 @@ private slots:
 
     void on_batchDelete_btn_clicked();
 
+    void show_adv_table(QSortFilterProxyModel *);
+//    void show_QMessageBox(int, )
+
 private:
     Ui::Menu *ui;
     Ui::UserReg *ui_reg;
@@ -44,9 +52,6 @@ private:
     TableModel* model;
     QSortFilterProxyModel *sqlproxy;
 };
-
-
-
 
 
 #endif // MENU_H
