@@ -6,7 +6,7 @@
 #include <QtSql>
 #include <QFileInfo>
 #include <QMessageBox>
-#include "tablemodel.h"
+#include "usertable.h"
 
 #define USERDBFILE "./UserDatabase.db"
 #define USERDBNAME "UserDatabase.db"
