@@ -6,7 +6,6 @@ Advertisement::Advertisement(QString advFoldPath, QWidget *parent) :
     ui(new Ui::Advertisement),
     m_stAdvFoldPath(advFoldPath)
 {
-    qDebug()<<m_stAdvFoldPath;
     ui->setupUi(this);
 
     this->ui->advertisement_lb->setScaledContents(true);
@@ -17,7 +16,6 @@ Advertisement::Advertisement(QString advFoldPath, QWidget *parent) :
 Advertisement::~Advertisement()
 {
     delete ui;
-    delete m_timerAdvPlay;
 }
 
 void Advertisement::on_adv_enterShop_bt_clicked()
@@ -118,7 +116,4 @@ void Advertisement::play_nextAdv()
     m_timerAdvPlay->singleShot(3000, this, SLOT(play_nextAdv()));
 }
 
-void Advertisement::SetAdvFoldPath(QString stAdvFoldPath)
-{
-    m_stAdvFoldPath = stAdvFoldPath;
-}
+

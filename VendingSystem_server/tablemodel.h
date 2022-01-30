@@ -12,7 +12,7 @@ public:
     bool setData(const QModelIndex &index, const QVariant &value, int role);
     QVariant data(const QModelIndex &index, int role) const;
     Qt::ItemFlags flags(const QModelIndex &index) const;
-    QMap<int,QPair<QVariant, Qt::CheckState> > check_state_map;
+    QMap<int, Qt::CheckState> check_state_map;
 };
 
 #endif // TABLEMODEL
