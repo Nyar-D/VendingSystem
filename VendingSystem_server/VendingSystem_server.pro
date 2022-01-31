@@ -29,3 +29,6 @@ FORMS    += login.ui \
     menu.ui \
     user_edit.ui \
     user_reg.ui
+
+RESOURCES += \
+    media.qrc

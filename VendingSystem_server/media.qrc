@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/Images"/>
+    <qresource prefix="/">
+        <file>../assets/Images/VendingMachine.jpg</file>
+    </qresource>
+</RCC>
