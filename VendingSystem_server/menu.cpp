@@ -305,6 +305,7 @@ void Menu::show_adv_table(QSortFilterProxyModel *sqlproxy)
 void Menu::editUser_btn_clicked(const QModelIndex &index)   // 表格界面的用户编辑按钮
 {
     qDebug() << "edit-index:" << index;
+    QModelIndex map_index = sqlproxy->mapToSource(index);   // 映射到原数据可以使得排序后的表格所内嵌的按钮ID号是该行的
     GeneralWidget = new QWidget();
     ui_edit = new Ui::UserEdit();
     ui_edit->setupUi(GeneralWidget);
@@ -312,12 +313,12 @@ void Menu::editUser_btn_clicked(const QModelIndex &index)   // 表格界面的�
     connect(ui_edit->edit_btn, SIGNAL(clicked(bool)), this, SLOT(edit_btn_clicked()));
     // 该语句可通过index(QModelIndex类)访问表格中其他行列
     // 下面是通过编辑按钮的下标访问其他数据
-    QString user_id = model->data(index.sibling(index.row(), 0), Qt::DisplayRole).toString();
-    QString user_name = model->data(index.sibling(index.row(), 1), Qt::DisplayRole).toString();
-    QString user_username = model->data(index.sibling(index.row(), 2), Qt::DisplayRole).toString();
-    QString user_password = model->data(index.sibling(index.row(), 3), Qt::DisplayRole).toString();
-    QString user_contact = model->data(index.sibling(index.row(), 5), Qt::DisplayRole).toString();
-    QString user_sex = model->data(index.sibling(index.row(), 4), Qt::DisplayRole).toString();
+    QString user_id = model->data(map_index.sibling(map_index.row(), 0), Qt::DisplayRole).toString();
+    QString user_name = model->data(map_index.sibling(map_index.row(), 1), Qt::DisplayRole).toString();
+    QString user_username = model->data(map_index.sibling(map_index.row(), 2), Qt::DisplayRole).toString();
+    QString user_password = model->data(map_index.sibling(map_index.row(), 3), Qt::DisplayRole).toString();
+    QString user_contact = model->data(map_index.sibling(map_index.row(), 5), Qt::DisplayRole).toString();
+    QString user_sex = model->data(map_index.sibling(map_index.row(), 4), Qt::DisplayRole).toString();
     // 让用户编辑界面显示编辑之前的用户数据
     ui_edit->id_le->setText(user_id);
     ui_edit->name_le->setText(user_name);
@@ -340,6 +341,7 @@ void Menu::editUser_btn_clicked(const QModelIndex &index)   // 表格界面的�
 void Menu::deleteUser_btn_clicked(const QModelIndex &index) //表格界面的用户删除按钮
 {
     qDebug() << "delete-index:" << index;
+    QModelIndex map_index = sqlproxy->mapToSource(index);   // 映射到原数据可以使得排序后的表格所内嵌的按钮ID号是该行的
     QMessageBox msg;    // 双向选择的逻辑
     msg.setText("确定要删除所选择的用户吗？");
     msg.setWindowTitle("Warning");
@@ -360,7 +362,7 @@ void Menu::deleteUser_btn_clicked(const QModelIndex &index) //表格界面的用
         {
             qDebug()<<"open";
             // 该语句可通过index(QModelIndex类)访问表格中其他行列,下面是通过删除按钮的下标访问ID号
-            QString delete_id = model->data(index.sibling(index.row(), 0), Qt::DisplayRole).toString();
+            QString delete_id = model->data(map_index.sibling(map_index.row(), 0), Qt::DisplayRole).toString();
             qDebug() << delete_id;
             QString delete_sql_user = "delete from user where ID=:ID";
             QSqlQuery sql_query = QSqlQuery(db);
