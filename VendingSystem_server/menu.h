@@ -60,14 +60,17 @@ private:
     void prepareTheTable(void);
 
 private:
-    Ui::Menu *ui;
-    Ui::UserReg *ui_reg;
-    Ui::UserEdit *ui_edit;
-    QWidget *GeneralWidget;
-    QSqlDatabase db;
-    TableModel* model;
-    QSortFilterProxyModel *sqlproxy;
-    ButtonDelegate *m_buttonDelegate;
+    Ui::Menu *ui;   // 后台界面的主Ui
+    Ui::UserReg *ui_reg;    // 新增用户时跳转的注册界面
+    Ui::UserEdit *ui_edit;  // 编辑用户时跳转的编辑界面
+    QWidget *GeneralWidget; // 跳转界面时<通用>的QWidget,不用重复创建了,如果单线程就用这个.
+    QSqlDatabase db;    // 数据库,常用open()和close()
+    TableModel* model;  // 已经重写的表格类,目前只负责用户的表格,想要负责其他表格的话,在下面声明其他对象
+
+
+    QSortFilterProxyModel *sqlproxy;    // 负责表格列排序的代理类,具体用法可以看.cpp中实现,
+                                        // 暂未尝试同时传入给两个表格,目前就一个用户表格使用
+    ButtonDelegate *m_buttonDelegate;   // 负责表格内嵌按钮的操作,不同表格声明不同对象
 };
 
 
