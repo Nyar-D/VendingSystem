@@ -5,6 +5,7 @@
 #include <QtSql>
 #include "ui_menu.h"
 #include "ui_userreg.h"
+#include "ui_useredit.h"
 #include <QDebug>
 #include <QMessageBox>
 #include <QFileInfo>
@@ -18,6 +19,7 @@
 namespace Ui {
 class Menu;
 class UserReg;
+class UserEdit;
 }
 
 class Menu : public QWidget
@@ -41,9 +43,13 @@ private slots:
 
     void show_adv_table(QSortFilterProxyModel *);
 //    void show_QMessageBox(int, )
-    void back_btn_clicked();
+    void reg_back_btn_clicked();
 
-    void add_btn_clicked();
+    void reg_add_btn_clicked();
+
+    void edit_btn_clicked();
+
+    void edit_back_btn_clicked();
 
     void editUser_btn_clicked(const QModelIndex &);
 
@@ -56,7 +62,8 @@ private:
 private:
     Ui::Menu *ui;
     Ui::UserReg *ui_reg;
-    QWidget *userRegWidget;
+    Ui::UserEdit *ui_edit;
+    QWidget *GeneralWidget;
     QSqlDatabase db;
     TableModel* model;
     QSortFilterProxyModel *sqlproxy;

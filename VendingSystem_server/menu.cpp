@@ -22,29 +22,26 @@ Menu::Menu(QWidget *parent) :
 Menu::~Menu()
 {
     delete ui;
-    delete ui_reg;
-    delete userRegWidget;
-    delete model;
-    delete m_buttonDelegate;
-    delete sqlproxy;
 }
 
 void Menu::on_newUser_btn_clicked()
 {
-    userRegWidget = new QWidget();
+    GeneralWidget = new QWidget();
     ui_reg = new Ui::UserReg();
-    ui_reg->setupUi(userRegWidget);
-    connect(ui_reg->back_btn, SIGNAL(clicked(bool)), this, SLOT(back_btn_clicked()));
-    connect(ui_reg->add_btn, SIGNAL(clicked(bool)), this, SLOT(add_btn_clicked()));
-    userRegWidget->show();
+    ui_reg->setupUi(GeneralWidget);
+    connect(ui_reg->back_btn, SIGNAL(clicked(bool)), this, SLOT(reg_back_btn_clicked()));
+    connect(ui_reg->add_btn, SIGNAL(clicked(bool)), this, SLOT(reg_add_btn_clicked()));
+    GeneralWidget->show();
 }
 
-void Menu::back_btn_clicked()
+void Menu::reg_back_btn_clicked()
 {
-    userRegWidget->close();
+    GeneralWidget->close();
+    delete ui_reg;
+    delete GeneralWidget;
 }
 
-void Menu::add_btn_clicked()
+void Menu::reg_add_btn_clicked()
 {
     QString name = ui_reg->name_le->text();
     QString username = ui_reg->username_le->text();
@@ -105,9 +102,11 @@ void Menu::add_btn_clicked()
             qDebug() << "User insert!";
             Menu::on_refresh_btn_clicked();
             QMessageBox::information(this, "Tip", "添加成功！");
-            userRegWidget->close();
+            GeneralWidget->close();
         }
         db.close();
+        delete ui_reg;
+        delete GeneralWidget;
     }
 
 }
@@ -153,6 +152,7 @@ void Menu::prepareTheTable(void)
         }
     }
     db.close();
+    return;
 }
 
 void Menu::on_refresh_btn_clicked()
@@ -166,6 +166,13 @@ void Menu::on_refresh_btn_clicked()
     }
     else
     {
+        if(!model)
+            delete model;
+        if(!m_buttonDelegate)
+            delete m_buttonDelegate;
+        if(!sqlproxy)
+            delete sqlproxy;
+
         model = new TableModel();
         m_buttonDelegate = new ButtonDelegate(ui->user_table);
         connect(m_buttonDelegate, SIGNAL(sig_editUser(QModelIndex)), this, SLOT(editUser_btn_clicked(QModelIndex)));
@@ -288,9 +295,164 @@ void Menu::show_adv_table(QSortFilterProxyModel *sqlproxy)
 void Menu::editUser_btn_clicked(const QModelIndex &index)
 {
     qDebug() << "edit-index:" << index;
+    GeneralWidget = new QWidget();
+    ui_edit = new Ui::UserEdit();
+    ui_edit->setupUi(GeneralWidget);
+    connect(ui_edit->back_btn, SIGNAL(clicked(bool)), this, SLOT(edit_back_btn_clicked()));
+    connect(ui_edit->edit_btn, SIGNAL(clicked(bool)), this, SLOT(edit_btn_clicked()));
+    QString user_id = model->data(index.sibling(index.row(), 0), Qt::DisplayRole).toString();
+    QString user_name = model->data(index.sibling(index.row(), 1), Qt::DisplayRole).toString();
+    QString user_username = model->data(index.sibling(index.row(), 2), Qt::DisplayRole).toString();
+    QString user_password = model->data(index.sibling(index.row(), 3), Qt::DisplayRole).toString();
+    QString user_contact = model->data(index.sibling(index.row(), 5), Qt::DisplayRole).toString();
+    QString user_sex = model->data(index.sibling(index.row(), 4), Qt::DisplayRole).toString();
+
+    ui_edit->id_le->setText(user_id);
+    ui_edit->name_le->setText(user_name);
+    ui_edit->username_le->setText(user_username);
+    ui_edit->password_le->setText(user_password);
+    ui_edit->contact_le->setText(user_contact);
+    if(user_sex == "男")
+    {
+        ui_edit->man->setChecked(true);
+    }
+    else if(user_sex == "女")
+    {
+        ui_edit->woman->setChecked(true);
+    }
+
+    GeneralWidget->show();
 }
 
+//
 void Menu::deleteUser_btn_clicked(const QModelIndex &index)
 {
     qDebug() << "delete-index:" << index;
+    QMessageBox msg;
+    msg.setText("确定要删除所选择的用户吗？");
+    msg.setWindowTitle("Warning");
+    QPushButton *yes_btn = msg.addButton("确认", QMessageBox::AcceptRole);
+    QPushButton *no_btn = msg.addButton("取消", QMessageBox::RejectRole);
+    msg.exec();
+    if(msg.clickedButton() == yes_btn)
+    {
+        qDebug() << "yes";
+
+        if(!db.open())
+        {
+            qDebug()<<"no open";
+            QMessageBox::critical(this, "Error", "无法打开数据库！");
+            return;
+        }
+        else
+        {
+            qDebug()<<"open";
+            QString delete_id = model->data(index.sibling(index.row(), 0), Qt::DisplayRole).toString();
+            qDebug() << delete_id;
+            QString delete_sql_user = "delete from user where ID=:ID";
+            QSqlQuery sql_query = QSqlQuery(db);
+            sql_query.prepare(delete_sql_user);
+            sql_query.bindValue(":ID",delete_id);
+            if(!sql_query.exec())
+            {
+                qDebug() << QObject::tr("User table failed to delete!");
+                qDebug() << sql_query.lastError();
+                QMessageBox::critical(this, "Error", "删除失败！");
+            }
+            else
+            {
+                qDebug() << "User delete!";
+                Menu::on_refresh_btn_clicked();
+                QMessageBox::information(this, "Tip", "删除成功！");
+            }
+            db.close();
+            return;
+        }
+    }
+    else if(msg.clickedButton() == no_btn)
+    {
+        qDebug() << "no";
+        return;
+    }
+    return;
+}
+
+void Menu::edit_btn_clicked()
+{
+    qDebug() << "edit_btn_clicked";
+    QString name = ui_edit->name_le->text();
+    QString username = ui_edit->username_le->text();
+    QString password = ui_edit->password_le->text();
+    QString contact = ui_edit->contact_le->text();
+    QString id = ui_edit->id_le->text();
+
+    QButtonGroup sexSelect;
+    sexSelect.addButton(ui_edit->man);
+    sexSelect.addButton(ui_edit->woman);
+    QString sex = sexSelect.checkedButton()->objectName();
+    if(!QString::compare(sex, "man"))
+        sex = "男";
+    else
+        sex = "女";
+
+    if(name.isEmpty() || username.isEmpty() || password.isEmpty() || contact.isEmpty() || contact.size() != 11)
+    {
+        ui_edit->tips_lb->setText("请检查输入！");
+        return;
+    }
+
+    qDebug() << "------------edit------------";
+    qDebug() << "Name:" << name
+             << "Sex:" << sex
+             << "Contact" << contact;
+    qDebug() << "---------------------------";
+
+
+    if(!db.open())
+    {
+        qDebug()<<"no open";
+        QMessageBox::critical(this, "Error", "无法打开数据库！");
+        return;
+    }
+    else
+    {
+        qDebug()<<"open";
+        QString update_sql_user = "update user set Name=:Name, Username=:Username, Password=:Password, Sex=:Sex, Contact=:Contact where ID=:ID";
+        QSqlQuery sql_query = QSqlQuery(db);
+        sql_query.prepare(update_sql_user);
+
+        sql_query.bindValue(":Name",name);
+        sql_query.bindValue(":Username", username);
+        sql_query.bindValue(":Password", password);
+        sql_query.bindValue(":Sex", sex);
+        sql_query.bindValue(":Contact", contact);
+        sql_query.bindValue(":ID", id);
+
+        if(!sql_query.exec())
+        {
+            qDebug() << QObject::tr("User table failed to edit!");
+            qDebug() << sql_query.lastError();
+            QMessageBox::critical(this, "Error", "编辑失败！");
+
+        }
+        else
+        {
+            qDebug() << "User edit!";
+            Menu::on_refresh_btn_clicked();
+            QMessageBox::information(this, "Tip", "编辑成功！");
+            GeneralWidget->close();
+        }
+        db.close();
+        delete ui_edit;
+        delete GeneralWidget;
+    }
+
+}
+
+void Menu::edit_back_btn_clicked()
+{
+    qDebug() << "edit_back_btn_clicked";
+    GeneralWidget->close();
+    delete ui_edit;
+    delete GeneralWidget;
 }
