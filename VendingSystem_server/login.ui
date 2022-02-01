@@ -35,7 +35,7 @@
     </rect>
    </property>
    <property name="styleSheet">
-    <string notr="true">image: url(:/assets/Images/VendingMachine.jpg);</string>
+    <string notr="true">image: url(:/Images/assets/Images/VendingMachine.jpg);</string>
    </property>
    <property name="text">
     <string/>
@@ -65,7 +65,7 @@
     <set>Qt::AlignCenter</set>
    </property>
   </widget>
-  <widget class="QWidget" name="">
+  <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
      <x>590</x>

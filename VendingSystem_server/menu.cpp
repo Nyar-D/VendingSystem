@@ -6,7 +6,8 @@ Menu::Menu(QWidget *parent) :
 {
     prepareTheTable();  // 准备数据库
     ui->setupUi(this);
-    Menu::on_refresh_btn_clicked();
+    Menu::on_user_refresh_btn_clicked();
+    Menu::goodTable_refresh();
 
     QThread *thDBHandler = new QThread;    //创建处理数据库的线程
     DBHandler *iDBHandler = new  DBHandler;
@@ -101,15 +102,14 @@ void Menu::reg_add_btn_clicked()    // 新增用户界面的添加按钮
         else
         {
             qDebug() << "User insert!";
-            Menu::on_refresh_btn_clicked();
+            Menu::on_user_refresh_btn_clicked();
             QMessageBox::information(this, "Tip", "添加成功！");
             GeneralWidget->close();
+            delete ui_reg;
+            delete GeneralWidget;
         }
         db.close();
-        delete ui_reg;
-        delete GeneralWidget;
     }
-
 }
 
 
@@ -147,6 +147,21 @@ void Menu::prepareTheTable(void) // 准备数据库
                 {
                     qDebug() << "User table created!";
                 }
+
+                QString create_sql_good = "create table good(ID INTEGER PRIMARY KEY AUTOINCREMENT,Name varchar(24),Price varchar(24),Stock int, Intro varchar(256))";
+                sql_query.prepare(create_sql_good);
+                if(!sql_query.exec())
+                {
+                    qDebug() << QObject::tr("Good table failed to create!");
+                    qDebug() << sql_query.lastError();
+                    QFile::remove(DBFILE);
+
+                }
+                else
+                {
+                    qDebug() << "Good table created!";
+                }
+
             }
             else
             {
@@ -160,7 +175,7 @@ void Menu::prepareTheTable(void) // 准备数据库
 }
 
 // 刷新表格,一般在执行完各种语句后都要刷新一遍
-void Menu::on_refresh_btn_clicked()
+void Menu::on_user_refresh_btn_clicked()
 {
     qDebug() << "refresh";
     if(!db.open())
@@ -281,7 +296,7 @@ void Menu::on_batchDelete_btn_clicked()
             else
             {
                 qDebug() << "User delete!";
-                Menu::on_refresh_btn_clicked();
+                Menu::on_user_refresh_btn_clicked();
                 QMessageBox::information(this, "Tip", "删除成功！");
             }
             db.close();
@@ -377,7 +392,7 @@ void Menu::deleteUser_btn_clicked(const QModelIndex &index) //表格界面的用
             else
             {
                 qDebug() << "User delete!";
-                Menu::on_refresh_btn_clicked();
+                Menu::on_user_refresh_btn_clicked();
                 QMessageBox::information(this, "Tip", "删除成功！");
             }
             db.close();
@@ -453,7 +468,7 @@ void Menu::edit_btn_clicked()   // 用户编辑界面的编辑按钮
         else
         {
             qDebug() << "User edit!";
-            Menu::on_refresh_btn_clicked();
+            Menu::on_user_refresh_btn_clicked();
             QMessageBox::information(this, "Tip", "编辑成功！");
             GeneralWidget->close();
         }
@@ -471,3 +486,128 @@ void Menu::edit_back_btn_clicked()  // 用户编辑界面的返回按钮
     delete ui_edit;
     delete GeneralWidget;
 }
+
+void Menu::on_addGoods_btn_clicked()
+{
+    GeneralWidget = new QWidget();
+    ui_goodAdd = new Ui::GoodAdd();
+    ui_goodAdd->setupUi(GeneralWidget);
+    connect(ui_goodAdd->back_btn, SIGNAL(clicked(bool)), this, SLOT(good_back_btn_clicked()));
+    connect(ui_goodAdd->add_btn, SIGNAL(clicked(bool)), this, SLOT(good_add_btn_clicked()));
+    GeneralWidget->show();
+}
+
+void Menu::good_back_btn_clicked()
+{
+    GeneralWidget->close();
+    delete ui_goodAdd;
+    delete GeneralWidget;
+}
+
+void Menu::good_add_btn_clicked()
+{
+    QString name = ui_goodAdd->name_le->text();
+    QString price = ui_goodAdd->price_le->text();
+    int stock = ui_goodAdd->stock_le->text().toInt();
+    QString intro = ui_goodAdd->introduction_pte->toPlainText();
+
+    if(name.isEmpty() || price.isEmpty() || price.isEmpty() || stock < 0)
+    {
+        ui_goodAdd->tips_lb->setText("请检查输入！");
+        return;
+    }
+
+    qDebug() << "------------add------------";
+    qDebug() << "Name:" << name
+             << "Price:" << price
+             << "stock" << stock;
+    qDebug() << "---------------------------";
+
+
+    if(!db.open())
+    {
+        qDebug()<<"no open";
+        QMessageBox::critical(this, "Error", "无法打开数据库！");
+        return;
+    }
+    else
+    {
+        //create table good(ID INTEGER PRIMARY KEY AUTOINCREMENT,Name varchar(24),Price varchar(24),Stock int, Intro varchar(256))
+        qDebug()<<"open";
+        // 向商品表添加商品
+        QString insert_sql_good = "insert into good(ID,Name,Price,Stock,Intro) values(:ID,:Name,:Price,:Stock,:Intro)";
+        QSqlQuery sql_query = QSqlQuery(db);
+        sql_query.prepare(insert_sql_good);
+
+        sql_query.bindValue(":Name",name);
+        sql_query.bindValue(":Price", price);
+        sql_query.bindValue(":Stock", stock);
+        sql_query.bindValue(":Intro", intro);
+
+        if(!sql_query.exec())
+        {
+            qDebug() << QObject::tr("Good table failed to insert!");
+            qDebug() << sql_query.lastError();
+            QMessageBox::critical(this, "Error", "添加失败！");
+        }
+        else
+        {
+            qDebug() << "Good insert!";
+            Menu::goodTable_refresh();
+            QMessageBox::information(this, "Tip", "添加成功！");
+            GeneralWidget->close();
+            delete ui_reg;
+            delete GeneralWidget;
+        }
+        db.close();
+    }
+}
+
+
+void Menu::goodTable_refresh()
+{
+    qDebug() << "refresh";
+    if(!db.open())
+    {
+        qDebug()<<"no open";
+        QMessageBox::critical(this, "Error", "无法打开数据库！");
+        return;
+    }
+    else
+    {
+        // 优化代码,防止new的资源没有释放掉又再次new
+        if(!model)
+            delete model;
+        if(!m_buttonDelegate)
+            delete m_buttonDelegate;
+        if(!sqlproxy)
+            delete sqlproxy;
+
+        model = new TableModel();   // 继承下来重写的类,负责表格内嵌勾选框
+        m_buttonDelegate = new ButtonDelegate(ui->good_table);  // 继承下来重写的类,负责表格内嵌按钮
+        // 连接操作,使得点击表格内嵌按钮时,触发信号进行处理
+        //connect(m_buttonDelegate, SIGNAL(sig_editUser(QModelIndex)), this, SLOT(editUser_btn_clicked(QModelIndex)));
+        //connect(m_buttonDelegate, SIGNAL(sig_deleteUser(QModelIndex)), this, SLOT(deleteUser_btn_clicked(QModelIndex)));
+        model->setQuery("select * from good", db);
+        // 设置表头
+        model->setHeaderData(0,Qt::Horizontal,QObject::tr("商品编号"));
+        model->setHeaderData(1,Qt::Horizontal,QObject::tr("商品名称"));
+        model->setHeaderData(2,Qt::Horizontal,QObject::tr("商品单价"));
+        model->setHeaderData(3,Qt::Horizontal,QObject::tr("商品库存"));
+        model->setHeaderData(4,Qt::Horizontal,QObject::tr("商品介绍"));
+        // 插入新的一列用于显示内嵌按钮
+        model->insertColumn(5);
+        model->setHeaderData(5,Qt::Horizontal,QObject::tr("操作"));
+        // 显示内嵌按钮
+        ui->good_table->setItemDelegateForColumn(5, m_buttonDelegate);
+        // 用于排序表格列的排序过滤器代理模型
+        sqlproxy = new QSortFilterProxyModel();
+        sqlproxy->setSourceModel(model);
+        ui->good_table->setModel(sqlproxy);
+        // 设置表格每列拉伸填充画面
+        ui->good_table->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+        db.close();
+    }
+}
+
+

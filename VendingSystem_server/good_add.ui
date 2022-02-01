@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>GoodAdd</class>
+ <widget class="QWidget" name="GoodAdd">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1024</width>
+    <height>600</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>GoodAdd</string>
+  </property>
+  <widget class="QWidget" name="layoutWidget">
+   <property name="geometry">
+    <rect>
+     <x>320</x>
+     <y>50</y>
+     <width>377</width>
+     <height>479</height>
+    </rect>
+   </property>
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <item>
+     <widget class="QLabel" name="title_lb">
+      <property name="font">
+       <font>
+        <pointsize>28</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>新增商品</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QLabel" name="name_lb">
+      <property name="text">
+       <string>商品名称：</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QLineEdit" name="name_le">
+      <property name="placeholderText">
+       <string>请输入商品名称</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QLabel" name="price_lb">
+      <property name="text">
+       <string>商品单价：</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QLineEdit" name="price_le">
+      <property name="echoMode">
+       <enum>QLineEdit::Normal</enum>
+      </property>
+      <property name="placeholderText">
+       <string>请输入商品单价</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QLabel" name="stock_lb">
+      <property name="text">
+       <string>商品库存：</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QLineEdit" name="stock_le">
+      <property name="placeholderText">
+       <string>请输入商品库存</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QLabel" name="introduction_lb">
+      <property name="text">
+       <string>商品介绍：</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QPlainTextEdit" name="introduction_pte">
+      <property name="placeholderText">
+       <string>请输入商品介绍</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QLabel" name="tips_lb">
+      <property name="styleSheet">
+       <string notr="true">color: rgb(255, 0, 0);</string>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <item>
+       <widget class="QPushButton" name="back_btn">
+        <property name="text">
+         <string>返回</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="add_btn">
+        <property name="text">
+         <string>添加</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+   </layout>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
