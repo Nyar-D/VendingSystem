@@ -10,8 +10,6 @@
 #include <QElapsedTimer>
 #include <QTimer>
 #include <QThread>
-#include <QDateTime>
-#include <QLabel>
 #include "shop.h"
 
 #define ADVFOLDPATH "../vendingSys_adv"
@@ -30,13 +28,11 @@ public:
 
     QFileInfoList GetFileList(QString);    //遍历文件夹获取文件列表
     void PlayAdv(QString);                 //加载广告文件
-    void SetStatusBarContent();            //设置状态栏内容
     void SetAdvFoldPath(QString);
 
 private slots:
     void on_adv_enterShop_bt_clicked();
     void play_nextAdv();                //轮播广告槽函数
-    void update_dateTime();             //更新时间
 
 private:
     Ui::Advertisement *ui;
@@ -46,8 +42,6 @@ private:
     QStringList m_stlAdvList;          //广告列表
     QTimer *m_timerAdvPlay;            //轮播定时器
     int m_nCurrentAdvNum;              //当前广告索引
-    QTimer *m_timerDateUpdate;         //更新时间定时器
-    QLabel *m_lbDateTime;
 };
 
 #endif // ADVERTISEMENT_H

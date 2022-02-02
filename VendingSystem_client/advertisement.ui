@@ -14,48 +14,14 @@
    <string>Advertisement</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <widget class="QPushButton" name="adv_enterShop_bt">
-    <property name="geometry">
-     <rect>
-      <x>412</x>
-      <y>440</y>
-      <width>200</width>
-      <height>48</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>点击购买</string>
-    </property>
-   </widget>
    <widget class="QLabel" name="advertisement_lb">
     <property name="geometry">
      <rect>
       <x>0</x>
       <y>0</y>
       <width>1024</width>
-      <height>575</height>
+      <height>568</height>
      </rect>
-    </property>
-    <property name="sizePolicy">
-     <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-      <horstretch>0</horstretch>
-      <verstretch>0</verstretch>
-     </sizepolicy>
-    </property>
-    <property name="minimumSize">
-     <size>
-      <width>1024</width>
-      <height>575</height>
-     </size>
-    </property>
-    <property name="maximumSize">
-     <size>
-      <width>10000</width>
-      <height>10000</height>
-     </size>
-    </property>
-    <property name="styleSheet">
-     <string notr="true"/>
     </property>
     <property name="text">
      <string>广告位招租，联系电话xxx-xxxxxxxx</string>
@@ -64,10 +30,21 @@
      <set>Qt::AlignCenter</set>
     </property>
    </widget>
-   <zorder>advertisement_lb</zorder>
-   <zorder>adv_enterShop_bt</zorder>
+   <widget class="QPushButton" name="adv_enterShop_bt">
+    <property name="geometry">
+     <rect>
+      <x>412</x>
+      <y>490</y>
+      <width>200</width>
+      <height>48</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>点击购买</string>
+    </property>
+   </widget>
   </widget>
-  <widget class="QStatusBar" name="adv_statusBar"/>
+  <widget class="QStatusBar" name="statusBar"/>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources/>
