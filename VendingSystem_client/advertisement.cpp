@@ -9,15 +9,20 @@ Advertisement::Advertisement(QString advFoldPath, QWidget *parent) :
     qDebug()<<m_stAdvFoldPath;
     ui->setupUi(this);
 
-    this->ui->advertisement_lb->setScaledContents(true);
+    ui->advertisement_lb->setScaledContents(true);            // 设置自适应窗口显示
 
-    PlayAdv(m_stAdvFoldPath); //加载广告文件
+    SetStatusBarContent();                                    //设置状态栏内容
+    PlayAdv(m_stAdvFoldPath);                                 //加载广告文件
 }
 
 Advertisement::~Advertisement()
 {
     delete ui;
+    delete shop;
     delete m_timerAdvPlay;
+    delete m_timerDateUpdate;
+    delete m_lbDateTime;
+
 }
 
 void Advertisement::on_adv_enterShop_bt_clicked()
@@ -55,16 +60,16 @@ void Advertisement::PlayAdv(QString path)
 
     qDebug()<<"show advertistment";
 
-    QFileInfoList stl_fileList = GetFileList(path);  //遍历文件夹获取文件信息
+    QFileInfoList stl_fileList = GetFileList(path);  // 遍历文件夹获取文件信息
     if(stl_fileList.isEmpty())
     {
         ui->advertisement_lb->setText("广告位招租，联系电话xxx-xxxxxxxx");
         return;
     }
 
-    foreach(QFileInfo advName, stl_fileList)         //使用Qt定义的宏
+    foreach(QFileInfo advName, stl_fileList)         // 使用Qt定义的宏
     {
-        filter = advName.suffix();                   //后缀名
+        filter = advName.suffix();                   // 后缀名
         if((filter != "jpg") && (filter != "jpeg") && (filter != "png") && (filter != "gif") && (filter != "mp4"))
             continue;
 
@@ -72,9 +77,9 @@ void Advertisement::PlayAdv(QString path)
         m_stlAdvList.append(advName.absoluteFilePath());
     }
 
-    m_nCurrentAdvNum = 0;                            //设置当前播放的广告
+    m_nCurrentAdvNum = 0;                            // 设置当前播放的广告
 
-    m_timerAdvPlay = new QTimer();                   //设置定时器
+    m_timerAdvPlay = new QTimer();                   // 设置定时器
     connect(m_timerAdvPlay, SIGNAL(timeout()), this, SLOT(play_nextAdv()));
     play_nextAdv();
 }
@@ -85,7 +90,7 @@ void Advertisement::play_nextAdv()
 
     QString advPath = m_stlAdvList.at(m_nCurrentAdvNum % m_stlAdvList.size());
 
-    if(advPath.endsWith(".mp4"))
+    if(advPath.endsWith(".mp4"))                     // 根据文件类型选择播放方式
     {
         QProcess *player = new QProcess();
         QStringList args;
@@ -104,7 +109,7 @@ void Advertisement::play_nextAdv()
     }
     if(advPath.endsWith(".jpg") || advPath.endsWith(".jpeg") || advPath.endsWith(".png"))
     {
-        QImage *img = new QImage(advPath);           //将图像资源载入对象img
+        QImage *img = new QImage(advPath);           // 将图像资源载入对象img
         ui->advertisement_lb->setPixmap(QPixmap::fromImage(*img));
     }
     else if(advPath.endsWith(".gif"))
@@ -118,7 +123,34 @@ void Advertisement::play_nextAdv()
     m_timerAdvPlay->singleShot(3000, this, SLOT(play_nextAdv()));
 }
 
+void Advertisement::SetStatusBarContent()
+{
+    QLabel *lbMachineIDText= new QLabel("机器编号：", this);                // 设置状态栏控件
+    QLabel *lbMachineID = new QLabel("xxxx-xxxx");
+    m_lbDateTime = new QLabel("yyyy-MM-dd");
+
+    QDateTime curDateTime = QDateTime::currentDateTime();
+    m_lbDateTime->setText(curDateTime.toString("yyyy-MM-dd hh:mm:ss"));
+
+    m_timerDateUpdate = new QTimer();
+    connect(m_timerDateUpdate, SIGNAL(timeout()), this, SLOT(update_dateTime()));
+    m_timerDateUpdate->start(1000);                                       //开始定时更新
+
+    statusBar()->addWisdget(lbMachineIDText);                              //将控件插入状态栏
+    statusBar()->addWidget(lbMachineID);
+    statusBar()->addPermanentWidget(m_lbDateTime);
+    statusBar()->setStyleSheet(QString("QStatusBar::item{border: 0px}")); // 设置不显示label的边框
+    statusBar()->setStyleSheet(" QLabel{ color: white }; background-color: rgb(64, 64, 64); ");  // 状态栏样式
+}
+
+void Advertisement::update_dateTime()
+{
+    QDateTime curDateTime = QDateTime::currentDateTime();
+    m_lbDateTime->setText(curDateTime.toString("yyyy-MM-dd hh:mm:ss"));
+}
+
 void Advertisement::SetAdvFoldPath(QString stAdvFoldPath)
 {
     m_stAdvFoldPath = stAdvFoldPath;
 }
+
