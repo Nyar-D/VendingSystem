@@ -136,7 +136,7 @@ void Advertisement::SetStatusBarContent()
     connect(m_timerDateUpdate, SIGNAL(timeout()), this, SLOT(update_dateTime()));
     m_timerDateUpdate->start(1000);                                       //开始定时更新
 
-    statusBar()->addWidget(lbMachineIDText);                              //将控件插入状态栏
+    statusBar()->addWisdget(lbMachineIDText);                              //将控件插入状态栏
     statusBar()->addWidget(lbMachineID);
     statusBar()->addPermanentWidget(m_lbDateTime);
     statusBar()->setStyleSheet(QString("QStatusBar::item{border: 0px}")); // 设置不显示label的边框
