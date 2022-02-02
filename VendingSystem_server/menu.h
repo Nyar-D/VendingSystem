@@ -8,8 +8,8 @@
 #include <QFileInfo>
 
 #include "ui_menu.h"
-#include "ui_userreg.h"
-#include "ui_useredit.h"
+#include "ui_user_reg.h"
+#include "ui_user_edit.h"
 #include "ui_good_add.h"
 #include "dbhandler.h"
 #include "usertable.h"

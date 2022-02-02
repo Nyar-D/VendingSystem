@@ -25,21 +25,21 @@ void Login::on_login_btn_clicked()
     QString usernameInput = ui->username_le->text();
     QString passwordInput = ui->password_le->text();
 
-    if(usernameInput.isEmpty() || passwordInput.isEmpty())
-    {
-        ui->tips_lb->setText("请输入用户名或密码！");
-        return;
-    }
+//    if(usernameInput.isEmpty() || passwordInput.isEmpty())
+//    {
+//        ui->tips_lb->setText("请输入用户名或密码！");
+//        return;
+//    }
 
-    if(usernameInput == "admin" && passwordInput == "123456")
-    {
+//    if(usernameInput == "admin" && passwordInput == "123456")
+//    {
         menu = new Menu();
         this->hide();
         menu->show();
-    }
-    else
-    {
-        ui->tips_lb->setText("用户名或密码错误！");
-        return;
-    }
+//    }
+//    else
+//    {
+//        ui->tips_lb->setText("用户名或密码错误！");
+//        return;
+//    }
 }
