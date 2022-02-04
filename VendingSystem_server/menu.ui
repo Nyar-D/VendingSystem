@@ -252,16 +252,29 @@
            <item>
             <layout class="QHBoxLayout" name="horizontalLayout_5">
              <item>
-              <widget class="QLineEdit" name="nameSearch_le">
+              <widget class="QLineEdit" name="good_nameSearch_le">
                <property name="placeholderText">
                 <string>请输入商品名称</string>
                </property>
               </widget>
              </item>
              <item>
-              <widget class="QPushButton" name="nameSearch_btn">
+              <widget class="QPushButton" name="good_nameSearch_btn">
+               <property name="focusPolicy">
+                <enum>Qt::ClickFocus</enum>
+               </property>
                <property name="text">
                 <string>查找</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="good_nameSearchandBack_btn">
+               <property name="focusPolicy">
+                <enum>Qt::ClickFocus</enum>
+               </property>
+               <property name="text">
+                <string>返回</string>
                </property>
               </widget>
              </item>
@@ -270,7 +283,10 @@
            <item>
             <layout class="QHBoxLayout" name="horizontalLayout_6">
              <item>
-              <widget class="QDateEdit" name="earlyDate_de">
+              <widget class="QDateEdit" name="good_earlyDate_de">
+               <property name="focusPolicy">
+                <enum>Qt::ClickFocus</enum>
+               </property>
                <property name="displayFormat">
                 <string>yyyy-MM-dd</string>
                </property>
@@ -284,14 +300,20 @@
               </widget>
              </item>
              <item>
-              <widget class="QDateEdit" name="lateDate_de">
+              <widget class="QDateEdit" name="good_lateDate_de">
+               <property name="focusPolicy">
+                <enum>Qt::ClickFocus</enum>
+               </property>
                <property name="displayFormat">
                 <string>yyyy-MM-dd</string>
                </property>
               </widget>
              </item>
              <item>
-              <widget class="QPushButton" name="dateSearch_btn">
+              <widget class="QPushButton" name="good_dateSearch_btn">
+               <property name="focusPolicy">
+                <enum>Qt::ClickFocus</enum>
+               </property>
                <property name="text">
                 <string>查找</string>
                </property>
@@ -353,14 +375,14 @@
            <item>
             <layout class="QHBoxLayout" name="horizontalLayout_9">
              <item>
-              <widget class="QLineEdit" name="nameSearch_le_2">
+              <widget class="QLineEdit" name="order_nameSearch_le">
                <property name="placeholderText">
                 <string>请输入商品名称</string>
                </property>
               </widget>
              </item>
              <item>
-              <widget class="QPushButton" name="nameSearch_btn_2">
+              <widget class="QPushButton" name="order_nameSearch_btn">
                <property name="text">
                 <string>查找</string>
                </property>
@@ -371,7 +393,7 @@
            <item>
             <layout class="QHBoxLayout" name="horizontalLayout_10">
              <item>
-              <widget class="QDateEdit" name="earlyDate_de_2">
+              <widget class="QDateEdit" name="order_earlyDate_de">
                <property name="displayFormat">
                 <string>yyyy-MM-dd</string>
                </property>
@@ -385,14 +407,14 @@
               </widget>
              </item>
              <item>
-              <widget class="QDateEdit" name="lateDate_de_2">
+              <widget class="QDateEdit" name="order_lateDate_de">
                <property name="displayFormat">
                 <string>yyyy-MM-dd</string>
                </property>
               </widget>
              </item>
              <item>
-              <widget class="QPushButton" name="dateSearch_btn_2">
+              <widget class="QPushButton" name="order_dateSearch_btn">
                <property name="text">
                 <string>查找</string>
                </property>

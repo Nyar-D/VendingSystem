@@ -64,6 +64,9 @@ private slots:
 
     void good_add_btn_clicked();
 
+    void on_good_nameSearch_btn_clicked();
+
+    void on_good_nameSearchandBack_btn_clicked();
 
 private:
     void goodTable_refresh(void);

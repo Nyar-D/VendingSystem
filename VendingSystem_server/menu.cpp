@@ -9,7 +9,7 @@ Menu::Menu(QWidget *parent) :
     Menu::on_user_refresh_btn_clicked();
     Menu::goodTable_refresh();
 
-    QThread *thDBHandler = new QThread;    //创建处理数据库的线程
+    QThread *thDBHandler = new QThread;    //创建处理数据库的线程trans_compose
     DBHandler *iDBHandler = new  DBHandler;
     iDBHandler->moveToThread(thDBHandler);
     connect(this, SIGNAL(GetAdvTable()), iDBHandler, SLOT(handle_getAdvTable()));
@@ -532,7 +532,6 @@ void Menu::good_add_btn_clicked()
     }
     else
     {
-        //create table good(ID INTEGER PRIMARY KEY AUTOINCREMENT,Name varchar(24),Price varchar(24),Stock int, Intro varchar(256))
         qDebug()<<"open";
         // 向商品表添加商品
         QString insert_sql_good = "insert into good(ID,Name,Price,Stock,Intro) values(:ID,:Name,:Price,:Stock,:Intro)";
@@ -607,7 +606,91 @@ void Menu::goodTable_refresh()
         // 设置表格每列拉伸填充画面
         ui->good_table->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
         db.close();
+        ui->good_nameSearchandBack_btn->setVisible(false);
     }
 }
 
 
+
+
+
+void Menu::on_good_nameSearch_btn_clicked()
+{
+    if(ui->good_nameSearch_le->text().isEmpty())
+    {
+        qDebug() << "please input.";
+        return;
+    }
+    else
+    {
+        if(!db.open())
+        {
+            qDebug()<<"no open";
+            QMessageBox::critical(this, "Error", "无法打开数据库！");
+            return;
+        }
+        else
+        {
+            qDebug()<< "search";
+            // 搜索表格
+            QString keyword = ui->good_nameSearch_le->text();
+            QString search_sql_good = "select * from good where Name like '%" + keyword +"%'";
+            qDebug() << "正在执行:" << search_sql_good;
+            QSqlQuery sql_query = QSqlQuery(db);
+            sql_query.prepare(search_sql_good);
+
+
+            if(!sql_query.exec())
+            {
+                qDebug() << QObject::tr("Good table failed to search!");
+                qDebug() << sql_query.lastError();
+                QMessageBox::critical(this, "Error", "查询失败！");
+
+            }
+            else
+            {
+                qDebug() << "Good search!";
+                // 优化代码,防止new的资源没有释放掉又再次new
+                if(!model)
+                    delete model;
+                if(!m_buttonDelegate)
+                    delete m_buttonDelegate;
+                if(!sqlproxy)
+                    delete sqlproxy;
+
+                model = new TableModel();   // 继承下来重写的类,负责表格内嵌勾选框
+                m_buttonDelegate = new ButtonDelegate(ui->good_table);  // 继承下来重写的类,负责表格内嵌按钮
+                // 连接操作,使得点击表格内嵌按钮时,触发信号进行处理
+                //connect(m_buttonDelegate, SIGNAL(sig_editUser(QModelIndex)), this, SLOT(editUser_btn_clicked(QModelIndex)));
+                //connect(m_buttonDelegate, SIGNAL(sig_deleteUser(QModelIndex)), this, SLOT(deleteUser_btn_clicked(QModelIndex)));
+                model->setQuery(search_sql_good, db);
+                // 设置表头
+                model->setHeaderData(0,Qt::Horizontal,QObject::tr("商品编号"));
+                model->setHeaderData(1,Qt::Horizontal,QObject::tr("商品名称"));
+                model->setHeaderData(2,Qt::Horizontal,QObject::tr("商品单价"));
+                model->setHeaderData(3,Qt::Horizontal,QObject::tr("商品库存"));
+                model->setHeaderData(4,Qt::Horizontal,QObject::tr("商品介绍"));
+                // 插入新的一列用于显示内嵌按钮
+                model->insertColumn(5);
+                model->setHeaderData(5,Qt::Horizontal,QObject::tr("操作"));
+                // 显示内嵌按钮
+                ui->good_table->setItemDelegateForColumn(5, m_buttonDelegate);
+                // 用于排序表格列的排序过滤器代理模型
+                sqlproxy = new QSortFilterProxyModel();
+                sqlproxy->setSourceModel(model);
+                ui->good_table->setModel(sqlproxy);
+                // 设置表格每列拉伸填充画面
+                ui->good_table->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+                ui->good_nameSearchandBack_btn->setVisible(true);
+            }
+            db.close();
+        }
+    }
+    return;
+}
+
+void Menu::on_good_nameSearchandBack_btn_clicked()
+{
+    Menu::goodTable_refresh();
+    return;
+}
