@@ -110,9 +110,9 @@ void DBHandler::RefreshAdvTable()
         model->setHeaderData(5,Qt::Horizontal,QObject::tr("广告类型"));
         model->setHeaderData(5,Qt::Horizontal,QObject::tr("审核状态"));
         model->setHeaderData(6,Qt::Horizontal,QObject::tr("是否启用"));
-        sqlproxy = new QSortFilterProxyModel(this);
-        sqlproxy->setSourceModel(model);
+        sqlproxy_adv = new QSortFilterProxyModel(this);
+        sqlproxy_adv->setSourceModel(model);
 
-        emit ShowAdvTable(sqlproxy);
+        emit ShowAdvTable(sqlproxy_adv);
     }
 }

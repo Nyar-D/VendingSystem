@@ -28,30 +28,30 @@ Menu::~Menu()
 void Menu::on_newUser_btn_clicked() // 用户管理界面的新增用户
 {
     GeneralWidget = new QWidget();
-    ui_reg = new Ui::UserReg();
-    ui_reg->setupUi(GeneralWidget);
-    connect(ui_reg->back_btn, SIGNAL(clicked(bool)), this, SLOT(reg_back_btn_clicked()));
-    connect(ui_reg->add_btn, SIGNAL(clicked(bool)), this, SLOT(reg_add_btn_clicked()));
+    ui_userReg = new Ui::UserReg();
+    ui_userReg->setupUi(GeneralWidget);
+    connect(ui_userReg->back_btn, SIGNAL(clicked(bool)), this, SLOT(reg_back_btn_clicked()));
+    connect(ui_userReg->add_btn, SIGNAL(clicked(bool)), this, SLOT(reg_add_btn_clicked()));
     GeneralWidget->show();
 }
 
 void Menu::reg_back_btn_clicked()   // 新增用户界面的返回按钮
 {
     GeneralWidget->close();
-    delete ui_reg;
+    delete ui_userReg;
     delete GeneralWidget;
 }
 
 void Menu::reg_add_btn_clicked()    // 新增用户界面的添加按钮
 {
-    QString name = ui_reg->name_le->text();
-    QString username = ui_reg->username_le->text();
-    QString password = ui_reg->password_le->text();
-    QString contact = ui_reg->contact_le->text();
+    QString name = ui_userReg->name_le->text();
+    QString username = ui_userReg->username_le->text();
+    QString password = ui_userReg->password_le->text();
+    QString contact = ui_userReg->contact_le->text();
 
     QButtonGroup sexSelect; // 通过Ui的RadioButton获得性别选择数据
-    sexSelect.addButton(ui_reg->man);
-    sexSelect.addButton(ui_reg->woman);
+    sexSelect.addButton(ui_userReg->man);
+    sexSelect.addButton(ui_userReg->woman);
     QString sex = sexSelect.checkedButton()->objectName();
     if(!QString::compare(sex, "man"))
         sex = "男";
@@ -60,7 +60,7 @@ void Menu::reg_add_btn_clicked()    // 新增用户界面的添加按钮
 
     if(name.isEmpty() || username.isEmpty() || password.isEmpty() || contact.isEmpty() || contact.size() != 11)
     {
-        ui_reg->tips_lb->setText("请检查输入！");
+        ui_userReg->tips_lb->setText("请检查输入！");
         return;
     }
 
@@ -105,7 +105,7 @@ void Menu::reg_add_btn_clicked()    // 新增用户界面的添加按钮
             Menu::on_user_refresh_btn_clicked();
             QMessageBox::information(this, "Tip", "添加成功！");
             GeneralWidget->close();
-            delete ui_reg;
+            delete ui_userReg;
             delete GeneralWidget;
         }
         db.close();
@@ -187,36 +187,36 @@ void Menu::on_user_refresh_btn_clicked()
     else
     {
         // 优化代码,防止new的资源没有释放掉又再次new
-        if(!model)
-            delete model;
-        if(!m_buttonDelegate)
-            delete m_buttonDelegate;
-        if(!sqlproxy)
-            delete sqlproxy;
+        if(!model_user)
+            delete model_user;
+        if(!m_userBD)
+            delete m_userBD;
+        if(!sqlproxy_user)
+            delete sqlproxy_user;
 
-        model = new TableModel();   // 继承下来重写的类,负责表格内嵌勾选框
-        m_buttonDelegate = new ButtonDelegate(ui->user_table);  // 继承下来重写的类,负责表格内嵌按钮
+        model_user = new TableModel();   // 继承下来重写的类,负责表格内嵌勾选框
+        m_userBD = new user_BD(ui->user_table);  // 继承下来重写的类,负责表格内嵌按钮
         // 连接操作,使得点击表格内嵌按钮时,触发信号进行处理
-        connect(m_buttonDelegate, SIGNAL(sig_editUser(QModelIndex)), this, SLOT(editUser_btn_clicked(QModelIndex)));
-        connect(m_buttonDelegate, SIGNAL(sig_deleteUser(QModelIndex)), this, SLOT(deleteUser_btn_clicked(QModelIndex)));
-        model->setQuery("select * from user", db);
+        connect(m_userBD, SIGNAL(sig_editUser(QModelIndex)), this, SLOT(editUser_btn_clicked(QModelIndex)));
+        connect(m_userBD, SIGNAL(sig_deleteUser(QModelIndex)), this, SLOT(deleteUser_btn_clicked(QModelIndex)));
+        model_user->setQuery("select * from user", db);
         // 设置表头
-        model->setHeaderData(0,Qt::Horizontal,QObject::tr("ID"));
-        model->setHeaderData(1,Qt::Horizontal,QObject::tr("姓名"));
-        model->setHeaderData(2,Qt::Horizontal,QObject::tr("用户名"));
-        model->setHeaderData(3,Qt::Horizontal,QObject::tr("密码"));
-        model->setHeaderData(4,Qt::Horizontal,QObject::tr("性别"));
-        model->setHeaderData(5,Qt::Horizontal,QObject::tr("联系方式"));
-        model->setHeaderData(6,Qt::Horizontal,QObject::tr("注册日期"));
+        model_user->setHeaderData(0,Qt::Horizontal,QObject::tr("ID"));
+        model_user->setHeaderData(1,Qt::Horizontal,QObject::tr("姓名"));
+        model_user->setHeaderData(2,Qt::Horizontal,QObject::tr("用户名"));
+        model_user->setHeaderData(3,Qt::Horizontal,QObject::tr("密码"));
+        model_user->setHeaderData(4,Qt::Horizontal,QObject::tr("性别"));
+        model_user->setHeaderData(5,Qt::Horizontal,QObject::tr("联系方式"));
+        model_user->setHeaderData(6,Qt::Horizontal,QObject::tr("注册日期"));
         // 插入新的一列用于显示内嵌按钮
-        model->insertColumn(7);
-        model->setHeaderData(7,Qt::Horizontal,QObject::tr("操作"));
+        model_user->insertColumn(7);
+        model_user->setHeaderData(7,Qt::Horizontal,QObject::tr("操作"));
         // 显示内嵌按钮
-        ui->user_table->setItemDelegateForColumn(7, m_buttonDelegate);
+        ui->user_table->setItemDelegateForColumn(7, m_userBD);
         // 用于排序表格列的排序过滤器代理模型
-        sqlproxy = new QSortFilterProxyModel();
-        sqlproxy->setSourceModel(model);
-        ui->user_table->setModel(sqlproxy);
+        sqlproxy_user = new QSortFilterProxyModel();
+        sqlproxy_user->setSourceModel(model_user);
+        ui->user_table->setModel(sqlproxy_user);
         // 设置表格每列拉伸填充画面
         ui->user_table->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
         db.close();
@@ -227,7 +227,7 @@ void Menu::on_user_refresh_btn_clicked()
 void Menu::on_batchDelete_btn_clicked()
 {
     // 存放表格内嵌勾选框的ID号,勾选状态的哈希表
-    QMap<int,QPair<QVariant, Qt::CheckState> > checkedMap = model->check_state_map;
+    QMap<int,QPair<QVariant, Qt::CheckState> > checkedMap = model_user->check_state_map;
     // 将哈希表中的数据提取出来组成List
     QList<QPair<QVariant, Qt::CheckState> > valuesList = checkedMap.values();
     // 未勾选时点击"批量删除"的提示框
@@ -305,48 +305,48 @@ void Menu::on_batchDelete_btn_clicked()
     else if(msg.clickedButton() == no_btn)  // 点击"批量删除"后又点击"取消"会清空所有勾选状态
     {
         qDebug() << "no";
-        model->check_state_map.clear();
+        model_user->check_state_map.clear();
         return;
     }
     return;
 }
 
-void Menu::show_adv_table(QSortFilterProxyModel *sqlproxy)
+void Menu::show_adv_table(QSortFilterProxyModel *sqlproxy_adv)
 {
     qDebug()<<"Menu: show_adv_table";
-    ui->adv_table->setModel(sqlproxy);
+    ui->adv_table->setModel(sqlproxy_adv);
 }
 
 void Menu::editUser_btn_clicked(const QModelIndex &index)   // 表格界面的用户编辑按钮
 {
     qDebug() << "edit-index:" << index;
-    QModelIndex map_index = sqlproxy->mapToSource(index);   // 映射到原数据可以使得排序后的表格所内嵌的按钮ID号是该行的
+    QModelIndex map_index = sqlproxy_user->mapToSource(index);   // 映射到原数据可以使得排序后的表格所内嵌的按钮ID号是该行的
     GeneralWidget = new QWidget();
-    ui_edit = new Ui::UserEdit();
-    ui_edit->setupUi(GeneralWidget);
-    connect(ui_edit->back_btn, SIGNAL(clicked(bool)), this, SLOT(edit_back_btn_clicked()));
-    connect(ui_edit->edit_btn, SIGNAL(clicked(bool)), this, SLOT(edit_btn_clicked()));
+    ui_userEdit = new Ui::UserEdit();
+    ui_userEdit->setupUi(GeneralWidget);
+    connect(ui_userEdit->back_btn, SIGNAL(clicked(bool)), this, SLOT(user_edit_back_btn_clicked()));
+    connect(ui_userEdit->edit_btn, SIGNAL(clicked(bool)), this, SLOT(user_edit_btn_clicked()));
     // 该语句可通过index(QModelIndex类)访问表格中其他行列
     // 下面是通过编辑按钮的下标访问其他数据
-    QString user_id = model->data(map_index.sibling(map_index.row(), 0), Qt::DisplayRole).toString();
-    QString user_name = model->data(map_index.sibling(map_index.row(), 1), Qt::DisplayRole).toString();
-    QString user_username = model->data(map_index.sibling(map_index.row(), 2), Qt::DisplayRole).toString();
-    QString user_password = model->data(map_index.sibling(map_index.row(), 3), Qt::DisplayRole).toString();
-    QString user_contact = model->data(map_index.sibling(map_index.row(), 5), Qt::DisplayRole).toString();
-    QString user_sex = model->data(map_index.sibling(map_index.row(), 4), Qt::DisplayRole).toString();
+    QString user_id = model_user->data(map_index.sibling(map_index.row(), 0), Qt::DisplayRole).toString();
+    QString user_name = model_user->data(map_index.sibling(map_index.row(), 1), Qt::DisplayRole).toString();
+    QString user_username = model_user->data(map_index.sibling(map_index.row(), 2), Qt::DisplayRole).toString();
+    QString user_password = model_user->data(map_index.sibling(map_index.row(), 3), Qt::DisplayRole).toString();
+    QString user_contact = model_user->data(map_index.sibling(map_index.row(), 5), Qt::DisplayRole).toString();
+    QString user_sex = model_user->data(map_index.sibling(map_index.row(), 4), Qt::DisplayRole).toString();
     // 让用户编辑界面显示编辑之前的用户数据
-    ui_edit->id_le->setText(user_id);
-    ui_edit->name_le->setText(user_name);
-    ui_edit->username_le->setText(user_username);
-    ui_edit->password_le->setText(user_password);
-    ui_edit->contact_le->setText(user_contact);
+    ui_userEdit->id_le->setText(user_id);
+    ui_userEdit->name_le->setText(user_name);
+    ui_userEdit->username_le->setText(user_username);
+    ui_userEdit->password_le->setText(user_password);
+    ui_userEdit->contact_le->setText(user_contact);
     if(user_sex == "男")
     {
-        ui_edit->man->setChecked(true);
+        ui_userEdit->man->setChecked(true);
     }
     else if(user_sex == "女")
     {
-        ui_edit->woman->setChecked(true);
+        ui_userEdit->woman->setChecked(true);
     }
 
     GeneralWidget->show();
@@ -356,7 +356,7 @@ void Menu::editUser_btn_clicked(const QModelIndex &index)   // 表格界面的�
 void Menu::deleteUser_btn_clicked(const QModelIndex &index) //表格界面的用户删除按钮
 {
     qDebug() << "delete-index:" << index;
-    QModelIndex map_index = sqlproxy->mapToSource(index);   // 映射到原数据可以使得排序后的表格所内嵌的按钮ID号是该行的
+    QModelIndex map_index = sqlproxy_user->mapToSource(index);   // 映射到原数据可以使得排序后的表格所内嵌的按钮ID号是该行的
     QMessageBox msg;    // 双向选择的逻辑
     msg.setText("确定要删除所选择的用户吗？");
     msg.setWindowTitle("Warning");
@@ -377,7 +377,7 @@ void Menu::deleteUser_btn_clicked(const QModelIndex &index) //表格界面的用
         {
             qDebug()<<"open";
             // 该语句可通过index(QModelIndex类)访问表格中其他行列,下面是通过删除按钮的下标访问ID号
-            QString delete_id = model->data(map_index.sibling(map_index.row(), 0), Qt::DisplayRole).toString();
+            QString delete_id = model_user->data(map_index.sibling(map_index.row(), 0), Qt::DisplayRole).toString();
             qDebug() << delete_id;
             QString delete_sql_user = "delete from user where ID=:ID";
             QSqlQuery sql_query = QSqlQuery(db);
@@ -407,18 +407,18 @@ void Menu::deleteUser_btn_clicked(const QModelIndex &index) //表格界面的用
     return;
 }
 
-void Menu::edit_btn_clicked()   // 用户编辑界面的编辑按钮
+void Menu::user_edit_btn_clicked()   // 用户编辑界面的编辑按钮
 {
-    qDebug() << "edit_btn_clicked"; // 通过Ui的LineEdit获得用户数据
-    QString name = ui_edit->name_le->text();
-    QString username = ui_edit->username_le->text();
-    QString password = ui_edit->password_le->text();
-    QString contact = ui_edit->contact_le->text();
-    QString id = ui_edit->id_le->text();
+    qDebug() << "user_edit_btn_clicked"; // 通过Ui的LineEdit获得用户数据
+    QString name = ui_userEdit->name_le->text();
+    QString username = ui_userEdit->username_le->text();
+    QString password = ui_userEdit->password_le->text();
+    QString contact = ui_userEdit->contact_le->text();
+    QString id = ui_userEdit->id_le->text();
 
     QButtonGroup sexSelect; // 通过Ui的RadioButton获得性别选择数据
-    sexSelect.addButton(ui_edit->man);
-    sexSelect.addButton(ui_edit->woman);
+    sexSelect.addButton(ui_userEdit->man);
+    sexSelect.addButton(ui_userEdit->woman);
     QString sex = sexSelect.checkedButton()->objectName();
     if(!QString::compare(sex, "man"))
         sex = "男";
@@ -427,7 +427,7 @@ void Menu::edit_btn_clicked()   // 用户编辑界面的编辑按钮
 
     if(name.isEmpty() || username.isEmpty() || password.isEmpty() || contact.isEmpty() || contact.size() != 11)
     {
-        ui_edit->tips_lb->setText("请检查输入！");
+        ui_userEdit->tips_lb->setText("请检查输入！");
         return;
     }
 
@@ -473,17 +473,17 @@ void Menu::edit_btn_clicked()   // 用户编辑界面的编辑按钮
             GeneralWidget->close();
         }
         db.close();
-        delete ui_edit;
+        delete ui_userEdit;
         delete GeneralWidget;
     }
 
 }
 
-void Menu::edit_back_btn_clicked()  // 用户编辑界面的返回按钮
+void Menu::user_edit_back_btn_clicked()  // 用户编辑界面的返回按钮
 {
-    qDebug() << "edit_back_btn_clicked";
+    qDebug() << "user_edit_back_btn_clicked";
     GeneralWidget->close();
-    delete ui_edit;
+    delete ui_userEdit;
     delete GeneralWidget;
 }
 
@@ -555,7 +555,7 @@ void Menu::good_add_btn_clicked()
             Menu::goodTable_refresh();
             QMessageBox::information(this, "Tip", "添加成功！");
             GeneralWidget->close();
-            delete ui_reg;
+            delete ui_userReg;
             delete GeneralWidget;
         }
         db.close();
@@ -575,39 +575,119 @@ void Menu::goodTable_refresh()
     else
     {
         // 优化代码,防止new的资源没有释放掉又再次new
-        if(!model)
-            delete model;
-        if(!m_buttonDelegate)
-            delete m_buttonDelegate;
-        if(!sqlproxy)
-            delete sqlproxy;
+        if(!model_good)
+            delete model_good;
+        if(!m_goodBD)
+            delete m_goodBD;
+        if(!sqlproxy_good)
+            delete sqlproxy_good;
 
-        model = new TableModel();   // 继承下来重写的类,负责表格内嵌勾选框
-        m_buttonDelegate = new ButtonDelegate(ui->good_table);  // 继承下来重写的类,负责表格内嵌按钮
+        model_good = new TableModel();   // 继承下来重写的类,负责表格内嵌勾选框
+        m_goodBD = new good_BD(ui->good_table);  // 继承下来重写的类,负责表格内嵌按钮
         // 连接操作,使得点击表格内嵌按钮时,触发信号进行处理
-        //connect(m_buttonDelegate, SIGNAL(sig_editUser(QModelIndex)), this, SLOT(editUser_btn_clicked(QModelIndex)));
-        //connect(m_buttonDelegate, SIGNAL(sig_deleteUser(QModelIndex)), this, SLOT(deleteUser_btn_clicked(QModelIndex)));
-        model->setQuery("select * from good", db);
+        connect(m_goodBD, SIGNAL(sig_editGood(QModelIndex)), this, SLOT(editGood_btn_clicked(QModelIndex)));
+        connect(m_goodBD, SIGNAL(sig_deleteGood(QModelIndex)), this, SLOT(deleteGood_btn_clicked(QModelIndex)));
+        model_good->setQuery("select * from good", db);
         // 设置表头
-        model->setHeaderData(0,Qt::Horizontal,QObject::tr("商品编号"));
-        model->setHeaderData(1,Qt::Horizontal,QObject::tr("商品名称"));
-        model->setHeaderData(2,Qt::Horizontal,QObject::tr("商品单价"));
-        model->setHeaderData(3,Qt::Horizontal,QObject::tr("商品库存"));
-        model->setHeaderData(4,Qt::Horizontal,QObject::tr("商品介绍"));
+        model_good->setHeaderData(0,Qt::Horizontal,QObject::tr("商品编号"));
+        model_good->setHeaderData(1,Qt::Horizontal,QObject::tr("商品名称"));
+        model_good->setHeaderData(2,Qt::Horizontal,QObject::tr("商品单价"));
+        model_good->setHeaderData(3,Qt::Horizontal,QObject::tr("商品库存"));
+        model_good->setHeaderData(4,Qt::Horizontal,QObject::tr("商品介绍"));
         // 插入新的一列用于显示内嵌按钮
-        model->insertColumn(5);
-        model->setHeaderData(5,Qt::Horizontal,QObject::tr("操作"));
+        model_good->insertColumn(5);
+        model_good->setHeaderData(5,Qt::Horizontal,QObject::tr("操作"));
         // 显示内嵌按钮
-        ui->good_table->setItemDelegateForColumn(5, m_buttonDelegate);
+        ui->good_table->setItemDelegateForColumn(5, m_goodBD);
         // 用于排序表格列的排序过滤器代理模型
-        sqlproxy = new QSortFilterProxyModel();
-        sqlproxy->setSourceModel(model);
-        ui->good_table->setModel(sqlproxy);
+        sqlproxy_good = new QSortFilterProxyModel();
+        sqlproxy_good->setSourceModel(model_good);
+        ui->good_table->setModel(sqlproxy_good);
         // 设置表格每列拉伸填充画面
         ui->good_table->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
         db.close();
         ui->good_nameSearchandBack_btn->setVisible(false);
     }
+}
+
+
+void Menu::editGood_btn_clicked(const QModelIndex &index)
+{
+    qDebug() << "edit-index:" << index;
+    QModelIndex map_index = sqlproxy_good->mapToSource(index);   // 映射到原数据可以使得排序后的表格所内嵌的按钮ID号是该行的
+    GeneralWidget = new QWidget();
+    ui_goodEdit = new Ui::GoodEdit();
+    ui_goodEdit->setupUi(GeneralWidget);
+    connect(ui_goodEdit->back_btn, SIGNAL(clicked(bool)), this, SLOT(good_edit_back_btn_clicked()));
+    connect(ui_goodEdit->edit_btn, SIGNAL(clicked(bool)), this, SLOT(good_edit_btn_clicked()));
+    // 该语句可通过index(QModelIndex类)访问表格中其他行列
+    // 下面是通过编辑按钮的下标访问其他数据
+    QString good_id = model_good->data(map_index.sibling(map_index.row(), 0), Qt::DisplayRole).toString();
+    QString good_name = model_good->data(map_index.sibling(map_index.row(), 1), Qt::DisplayRole).toString();
+    QString good_price = model_good->data(map_index.sibling(map_index.row(), 2), Qt::DisplayRole).toString();
+    QString good_stock = model_good->data(map_index.sibling(map_index.row(), 3), Qt::DisplayRole).toString();
+    QString good_intro = model_good->data(map_index.sibling(map_index.row(), 4), Qt::DisplayRole).toString();
+    // 让用户编辑界面显示编辑之前的用户数据
+    ui_goodEdit->id_le->setText(good_id);
+    ui_goodEdit->name_le->setText(good_name);
+    ui_goodEdit->price_le->setText(good_price);
+    ui_goodEdit->stock_le->setText(good_stock);
+    ui_goodEdit->introduction_pte->appendPlainText(good_intro);
+    GeneralWidget->show();
+}
+
+void Menu::deleteGood_btn_clicked(const QModelIndex &index)
+{
+    qDebug() << "delete-index:" << index;
+    QModelIndex map_index = sqlproxy_good->mapToSource(index);   // 映射到原数据可以使得排序后的表格所内嵌的按钮ID号是该行的
+    QMessageBox msg;    // 双向选择的逻辑
+    msg.setText("确定要删除所选择的商品吗？");
+    msg.setWindowTitle("Warning");
+    QPushButton *yes_btn = msg.addButton("确认", QMessageBox::AcceptRole);
+    QPushButton *no_btn = msg.addButton("取消", QMessageBox::RejectRole);
+    msg.exec();
+    if(msg.clickedButton() == yes_btn)
+    {
+        qDebug() << "yes";
+
+        if(!db.open())
+        {
+            qDebug()<<"no open";
+            QMessageBox::critical(this, "Error", "无法打开数据库！");
+            return;
+        }
+        else
+        {
+            qDebug()<<"open";
+            // 该语句可通过index(QModelIndex类)访问表格中其他行列,下面是通过删除按钮的下标访问ID号
+            QString delete_id = model_good->data(map_index.sibling(map_index.row(), 0), Qt::DisplayRole).toString();
+            qDebug() << delete_id;
+            QString delete_sql_good = "delete from good where ID=:ID";
+            QSqlQuery sql_query = QSqlQuery(db);
+            sql_query.prepare(delete_sql_good);
+            sql_query.bindValue(":ID",delete_id);
+            if(!sql_query.exec())
+            {
+                qDebug() << QObject::tr("Good table failed to delete!");
+                qDebug() << sql_query.lastError();
+                QMessageBox::critical(this, "Error", "删除失败！");
+            }
+            else
+            {
+                qDebug() << "Good delete!";
+                Menu::goodTable_refresh();
+                QMessageBox::information(this, "Tip", "删除成功！");
+            }
+            db.close();
+            return;
+        }
+    }
+    else if(msg.clickedButton() == no_btn)
+    {
+        qDebug() << "no";
+        return;
+    }
+    return;
 }
 
 
@@ -651,34 +731,34 @@ void Menu::on_good_nameSearch_btn_clicked()
             {
                 qDebug() << "Good search!";
                 // 优化代码,防止new的资源没有释放掉又再次new
-                if(!model)
-                    delete model;
-                if(!m_buttonDelegate)
-                    delete m_buttonDelegate;
-                if(!sqlproxy)
-                    delete sqlproxy;
+                if(!model_good)
+                    delete model_good;
+                if(!m_goodBD)
+                    delete m_goodBD;
+                if(!sqlproxy_good)
+                    delete sqlproxy_good;
 
-                model = new TableModel();   // 继承下来重写的类,负责表格内嵌勾选框
-                m_buttonDelegate = new ButtonDelegate(ui->good_table);  // 继承下来重写的类,负责表格内嵌按钮
+                model_good = new TableModel();   // 继承下来重写的类,负责表格内嵌勾选框
+                m_goodBD = new good_BD(ui->good_table);  // 继承下来重写的类,负责表格内嵌按钮
                 // 连接操作,使得点击表格内嵌按钮时,触发信号进行处理
-                //connect(m_buttonDelegate, SIGNAL(sig_editUser(QModelIndex)), this, SLOT(editUser_btn_clicked(QModelIndex)));
-                //connect(m_buttonDelegate, SIGNAL(sig_deleteUser(QModelIndex)), this, SLOT(deleteUser_btn_clicked(QModelIndex)));
-                model->setQuery(search_sql_good, db);
+                connect(m_goodBD, SIGNAL(sig_editGood(QModelIndex)), this, SLOT(editGood_btn_clicked(QModelIndex)));
+                connect(m_goodBD, SIGNAL(sig_deleteGood(QModelIndex)), this, SLOT(deleteGood_btn_clicked(QModelIndex)));
+                model_good->setQuery(search_sql_good, db);
                 // 设置表头
-                model->setHeaderData(0,Qt::Horizontal,QObject::tr("商品编号"));
-                model->setHeaderData(1,Qt::Horizontal,QObject::tr("商品名称"));
-                model->setHeaderData(2,Qt::Horizontal,QObject::tr("商品单价"));
-                model->setHeaderData(3,Qt::Horizontal,QObject::tr("商品库存"));
-                model->setHeaderData(4,Qt::Horizontal,QObject::tr("商品介绍"));
+                model_good->setHeaderData(0,Qt::Horizontal,QObject::tr("商品编号"));
+                model_good->setHeaderData(1,Qt::Horizontal,QObject::tr("商品名称"));
+                model_good->setHeaderData(2,Qt::Horizontal,QObject::tr("商品单价"));
+                model_good->setHeaderData(3,Qt::Horizontal,QObject::tr("商品库存"));
+                model_good->setHeaderData(4,Qt::Horizontal,QObject::tr("商品介绍"));
                 // 插入新的一列用于显示内嵌按钮
-                model->insertColumn(5);
-                model->setHeaderData(5,Qt::Horizontal,QObject::tr("操作"));
+                model_good->insertColumn(5);
+                model_good->setHeaderData(5,Qt::Horizontal,QObject::tr("操作"));
                 // 显示内嵌按钮
-                ui->good_table->setItemDelegateForColumn(5, m_buttonDelegate);
+                ui->good_table->setItemDelegateForColumn(5, m_goodBD);
                 // 用于排序表格列的排序过滤器代理模型
-                sqlproxy = new QSortFilterProxyModel();
-                sqlproxy->setSourceModel(model);
-                ui->good_table->setModel(sqlproxy);
+                sqlproxy_good = new QSortFilterProxyModel();
+                sqlproxy_good->setSourceModel(model_good);
+                ui->good_table->setModel(sqlproxy_good);
                 // 设置表格每列拉伸填充画面
                 ui->good_table->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
                 ui->good_nameSearchandBack_btn->setVisible(true);
@@ -693,4 +773,80 @@ void Menu::on_good_nameSearchandBack_btn_clicked()
 {
     Menu::goodTable_refresh();
     return;
+}
+
+
+void Menu::good_edit_btn_clicked()
+{
+    qDebug() << "good_edit_btn_clicked"; // 通过Ui的LineEdit获得商品数据
+    QString name = ui_goodEdit->name_le->text();
+    QString price = ui_goodEdit->price_le->text();
+    QString stock = ui_goodEdit->stock_le->text();
+    QString intro = ui_goodEdit->introduction_pte->toPlainText();
+    QString id = ui_goodEdit->id_le->text();
+
+    if(name.isEmpty() || price.isEmpty() || stock.isEmpty() || intro.isEmpty())
+    {
+        ui_goodEdit->tips_lb->setText("请检查输入！");
+        return;
+    }
+
+    qDebug() << "------------edit------------";
+    qDebug() << "Name:" << name
+             << "Price:" << price
+             << "Stock" << stock
+             << "Intro" << intro;
+    qDebug() << "---------------------------";
+
+
+    if(!db.open())
+    {
+        qDebug()<<"no open";
+        QMessageBox::critical(this, "Error", "无法打开数据库！");
+        return;
+    }
+    else
+    {
+        qDebug()<<"open";   // 相关update语句负责修改商品数据
+        QString update_sql_good = "update good set Name=:Name, Price=:Price, Stock=:Stock, Intro=:Intro where ID=:ID";
+        QSqlQuery sql_query = QSqlQuery(db);
+        sql_query.prepare(update_sql_good);
+
+        sql_query.bindValue(":Name",name);
+        sql_query.bindValue(":Price", price);
+        sql_query.bindValue(":Stock", stock);
+        sql_query.bindValue(":Intro", intro);
+        sql_query.bindValue(":ID", id);
+
+        if(!sql_query.exec())
+        {
+            qDebug() << QObject::tr("Good table failed to edit!");
+            qDebug() << sql_query.lastError();
+            QMessageBox::critical(this, "Error", "编辑失败！");
+
+        }
+        else
+        {
+            qDebug() << "Good edit!";
+            Menu::goodTable_refresh();
+            QMessageBox::information(this, "Tip", "编辑成功！");
+            GeneralWidget->close();
+        }
+        db.close();
+        delete ui_goodEdit;
+        delete GeneralWidget;
+    }
+
+}
+
+
+
+
+
+void Menu::good_edit_back_btn_clicked()
+{
+    qDebug() << "good_edit_back_btn_clicked";
+    GeneralWidget->close();
+    delete ui_goodEdit;
+    delete GeneralWidget;
 }

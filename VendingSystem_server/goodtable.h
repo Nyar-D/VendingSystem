@@ -11,7 +11,7 @@
 #include <QMessageBox>
 #include <QDebug>
 
-class TableModel : public QSqlQueryModel
+class goodTable : public QSqlQueryModel
 {
 public:
     bool setData(const QModelIndex &index, const QVariant &value, int role);

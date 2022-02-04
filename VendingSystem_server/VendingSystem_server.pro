@@ -16,13 +16,12 @@ SOURCES += main.cpp\
         login.cpp \
     menu.cpp \
     dbhandler.cpp \
-    usertable.cpp
-    usertable.cpp
+    table.cpp
 
 HEADERS  += login.h \
     menu.h \
-    usertable.h \
-    dbhandler.h
+    dbhandler.h \
+    table.h
     dbhandler.h
 
 FORMS    += login.ui \
@@ -30,7 +29,8 @@ FORMS    += login.ui \
     user_edit.ui \
     user_reg.ui \
     good_add.ui \
-    adv_reg.ui
+    adv_reg.ui \
+    good_edit.ui
 
 RESOURCES += \
     media.qrc

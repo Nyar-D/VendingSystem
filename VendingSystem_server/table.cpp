@@ -1,4 +1,4 @@
-#include "usertable.h"
+#include "table.h"
 
 bool TableModel::setData(const QModelIndex &index, const QVariant &value, int role)
 {
@@ -41,7 +41,7 @@ Qt::ItemFlags TableModel::flags(const QModelIndex &index) const
 }
 
 
-ButtonDelegate::ButtonDelegate(QObject *parent):
+user_BD::user_BD(QObject *parent):
     QItemDelegate(parent)
 {
 
@@ -49,7 +49,7 @@ ButtonDelegate::ButtonDelegate(QObject *parent):
 
 
 
-void ButtonDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
+void user_BD::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
     // 哈希表中存放的按钮对
     QPair<QStyleOptionButton*, QStyleOptionButton*>* buttons = m_btns.value(index);
@@ -65,7 +65,7 @@ void ButtonDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option
         button2->state |= QStyle::State_Enabled;
 
         buttons = new QPair<QStyleOptionButton*, QStyleOptionButton*>(button1, button2);
-        (const_cast<ButtonDelegate *>(this))->m_btns.insert(index, buttons);// 不知道
+        (const_cast<user_BD *>(this))->m_btns.insert(index, buttons);// 不知道
     }
     // 绘制内嵌按钮的形状位置和动画
     buttons->first->rect = option.rect.adjusted(4, 4, -(option.rect.width() / 2 + 4), -4);
@@ -81,7 +81,7 @@ void ButtonDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option
 }
 
 // 控制按钮的鼠标点击事件
-bool ButtonDelegate::editorEvent(QEvent *event, QAbstractItemModel *model, const QStyleOptionViewItem &option, const QModelIndex &index)
+bool user_BD::editorEvent(QEvent *event, QAbstractItemModel *model, const QStyleOptionViewItem &option, const QModelIndex &index)
 {
     if(event->type() == QEvent::MouseButtonPress)
     {
@@ -123,6 +123,55 @@ bool ButtonDelegate::editorEvent(QEvent *event, QAbstractItemModel *model, const
     }
 }
 
+
+good_BD::good_BD(QObject *parent):
+    user_BD(parent)
+{
+
+}
+
+
+bool good_BD::editorEvent(QEvent *event, QAbstractItemModel *model, const QStyleOptionViewItem &option, const QModelIndex &index)
+{
+    if(event->type() == QEvent::MouseButtonPress)
+    {
+        QMouseEvent* e = (QMouseEvent *)event;
+        // 传入鼠标点击的下标与点击的范围
+        if(m_btns.contains(index))
+        {
+            QPair<QStyleOptionButton*, QStyleOptionButton*>* btns = m_btns.value(index);
+            if(btns->first->rect.contains(e->x(), e->y()))
+            {
+                btns->first->state |= QStyle::State_Sunken;
+            }
+            else if(btns->second->rect.contains(e->x(), e->y()))
+            {
+                btns->second->state |= QStyle::State_Sunken;
+            }
+        }
+    }
+    if(event->type() == QEvent::MouseButtonRelease)
+    {
+        QMouseEvent* e = (QMouseEvent *)event;
+        // 鼠标点击的事件
+        if(m_btns.contains(index))
+        {
+            QPair<QStyleOptionButton*, QStyleOptionButton*>* btns = m_btns.value(index);
+            if(btns->first->rect.contains(e->x(), e->y()))
+            {
+                btns->first->state &= (~QStyle::State_Sunken);
+                // 触发信号给编辑用户
+                emit sig_editGood(index);
+            }
+            else if(btns->second->rect.contains(e->x(), e->y()))
+            {
+                btns->second->state &= (~QStyle::State_Sunken);
+                // 触发信号给删除用户
+                emit sig_deleteGood(index);
+            }
+        }
+    }
+}
 
 
 

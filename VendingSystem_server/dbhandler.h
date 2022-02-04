@@ -6,7 +6,7 @@
 #include <QtSql>
 #include <QFileInfo>
 #include <QMessageBox>
-#include "usertable.h"
+#include "table.h"
 
 #define DBFILE "./UserDatabase.db"
 #define DBNAME "UserDatabase.db"
@@ -32,7 +32,7 @@ protected:
 
     QSqlDatabase db;
     TableModel* model;
-    QSortFilterProxyModel *sqlproxy;
+    QSortFilterProxyModel *sqlproxy_adv;
 };
 
 #endif // DBHANDLER_H

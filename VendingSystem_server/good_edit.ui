@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>UserEdit</class>
- <widget class="QWidget" name="UserEdit">
+ <class>GoodEdit</class>
+ <widget class="QWidget" name="GoodEdit">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -16,10 +16,10 @@
   <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
-     <x>400</x>
-     <y>50</y>
-     <width>244</width>
-     <height>496</height>
+     <x>320</x>
+     <y>60</y>
+     <width>377</width>
+     <height>479</height>
     </rect>
    </property>
    <layout class="QVBoxLayout" name="verticalLayout">
@@ -31,7 +31,7 @@
        </font>
       </property>
       <property name="text">
-       <string>编辑用户</string>
+       <string>编辑商品</string>
       </property>
       <property name="alignment">
        <set>Qt::AlignCenter</set>
@@ -41,7 +41,7 @@
     <item>
      <widget class="QLabel" name="id_lb">
       <property name="text">
-       <string>ID：</string>
+       <string>商品编号：</string>
       </property>
      </widget>
     </item>
@@ -55,95 +55,61 @@
     <item>
      <widget class="QLabel" name="name_lb">
       <property name="text">
-       <string>姓名：</string>
+       <string>商品名称：</string>
       </property>
      </widget>
     </item>
     <item>
      <widget class="QLineEdit" name="name_le">
       <property name="placeholderText">
-       <string>请输入姓名</string>
+       <string>请输入商品名称</string>
       </property>
      </widget>
     </item>
     <item>
-     <widget class="QLabel" name="username_lb">
+     <widget class="QLabel" name="price_lb">
       <property name="text">
-       <string>用户名：</string>
+       <string>商品单价：</string>
       </property>
      </widget>
     </item>
     <item>
-     <widget class="QLineEdit" name="username_le">
-      <property name="placeholderText">
-       <string>请输入用户名</string>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <widget class="QLabel" name="password_lb">
-      <property name="text">
-       <string>密码：</string>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <widget class="QLineEdit" name="password_le">
+     <widget class="QLineEdit" name="price_le">
       <property name="echoMode">
-       <enum>QLineEdit::Password</enum>
+       <enum>QLineEdit::Normal</enum>
       </property>
       <property name="placeholderText">
-       <string>请输入密码</string>
+       <string>请输入商品单价</string>
       </property>
      </widget>
     </item>
     <item>
-     <widget class="QLabel" name="contact_lb">
+     <widget class="QLabel" name="stock_lb">
       <property name="text">
-       <string>联系方式：</string>
+       <string>商品库存：</string>
       </property>
      </widget>
     </item>
     <item>
-     <widget class="QLineEdit" name="contact_le">
+     <widget class="QLineEdit" name="stock_le">
       <property name="placeholderText">
-       <string>请输入联系方式</string>
+       <string>请输入商品库存</string>
       </property>
      </widget>
     </item>
     <item>
-     <widget class="QLabel" name="sex_lb">
+     <widget class="QLabel" name="introduction_lb">
       <property name="text">
-       <string>性别：</string>
+       <string>商品介绍：</string>
       </property>
      </widget>
     </item>
     <item>
-     <layout class="QHBoxLayout" name="horizontalLayout_2">
-      <item>
-       <widget class="QRadioButton" name="man">
-        <property name="focusPolicy">
-         <enum>Qt::NoFocus</enum>
-        </property>
-        <property name="text">
-         <string>男</string>
-        </property>
-        <property name="checked">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QRadioButton" name="woman">
-        <property name="focusPolicy">
-         <enum>Qt::NoFocus</enum>
-        </property>
-        <property name="text">
-         <string>女</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
+     <widget class="QPlainTextEdit" name="introduction_pte">
+      <property name="placeholderText">
+       <string>请输入商品介绍</string>
+      </property>
+     </widget>
     </item>
     <item>
      <widget class="QLabel" name="tips_lb">
